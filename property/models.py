@@ -11,9 +11,7 @@ class Address(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     zip = models.CharField(max_length=20)
-    floor = models.IntegerField()
-    roofing = models.CharField(max_length=100)
-    structure = models.CharField(max_length=100)
+    
 
 class PropertyDetails(models.Model):
     id = models.CharField(max_length=50)
@@ -23,16 +21,20 @@ class PropertyDetails(models.Model):
     rooms = models.IntegerField()
     bed = models.ImageField()
     bath = models.IntegerField()
+    floor = models.IntegerField()
+    roofing = models.CharField(max_length=100)
+    structure = models.CharField(max_length=100)
 
 class Property(models.Model):
     sku = models.UUIDField(max_length=100, blank=True, unique=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=500)
     price = models.FloatField()
-    rent_per = models.CharField(max_length=30)
+    price_unit = models.CharField(max_length=50)
+    price_type = models.CharField(max_length=30)
     thumbnail = models.ImageField(upload_to='thumbnail/')
-    property_type = models.CharField(max_length=50)
-    ad_type = models.CharField(max_length=100)
+    property_category = models.CharField(max_length=50)
+    post_type = models.CharField(max_length=100)
     loc = models.CharField(max_length=500)
     lat = models.CharField(max_length=100)
     long = models.CharField(max_length=100)
@@ -47,6 +49,6 @@ class Image(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='pimages/')
 
-class video(models.Model):
+class Video(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     video = models.ImageField(upload_to='pvideo/')
