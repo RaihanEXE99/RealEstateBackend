@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import *
 # Create your views here.
 
-
-def property(request, sku):
+@api_view('GET')
+def property(request, *args, **kwargs):
+    sku = request.GET.get('sku')
     try:
         p = Property.objects.get(sku=sku)
     except:
@@ -60,8 +63,8 @@ def property(request, sku):
         if vid:
             data['video'] = vid
 
-        return JsonResponse(data)
+        return Response(data)
     
     else:
 
-        return "404"
+        return Response({'error': 'Property Not Found!'}, status="404")
