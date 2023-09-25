@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+import json
 from rest_framework.response import Response
 from django.forms.models import model_to_dict
 from .models import *
@@ -9,20 +10,24 @@ from rest_framework.permissions import AllowAny
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
-def property(request, *args, **kwargs):
-    sku = request.GET.get('sku')
+def property(request, sku):
+    # sku = request.GET.get('sku')
     data = {}
     try:
+        print('Try running')
         p = Property.objects.all().first()
+        print(p)
     except:
+        print('ex running')
         p = None
 
     if p:
         data = model_to_dict(p)
+        data['thumbnail'] = data['thumbnail'].url
         print(data)
 
         # Image field files cannot be shown as a JSON response
-        return Response({"Title":data['title']}) #Temporary Check
+        return Response(data) #Temporary Check
     
     else:
 

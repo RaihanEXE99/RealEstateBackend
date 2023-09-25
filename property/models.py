@@ -50,7 +50,7 @@ class Property(models.Model):
     hide_contact = models.CharField(max_length=10, choices=hc_choice, default=1)
 
     def __str__(self):
-        return self.sku
+        return str(self.sku)
 
 
 class Image(models.Model):
