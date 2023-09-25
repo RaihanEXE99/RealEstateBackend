@@ -10,6 +10,18 @@ from rest_framework.permissions import AllowAny
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def all_properties(request, *args, **kwargs):
+    properties = Property.objects.all()
+    titles = [property.title for property in properties]
+
+    data = {
+        'titles': titles
+    }
+
+    return JsonResponse(data)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, sku):
     # sku = request.GET.get('sku')
     data = {}
@@ -24,6 +36,8 @@ def property(request, sku):
     if p:
         data = model_to_dict(p)
         data['thumbnail'] = data['thumbnail'].url
+        data['address'] = model_to_dict(p.address)
+        data['details'] = model_to_dict(p.details)
         print(data)
 
         # Image field files cannot be shown as a JSON response
