@@ -49,6 +49,9 @@ class Property(models.Model):
     details = models.ForeignKey(PropertyDetails, on_delete=models.CASCADE)
     hide_contact = models.CharField(max_length=10, choices=hc_choice, default=1)
 
+    def __str__(self):
+        return self.sku
+
 
 class Image(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
