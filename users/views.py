@@ -1,28 +1,10 @@
-from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from rest_framework.permissions import AllowAny
-from users.models import UserAccount as User
 
-from rest_framework.permissions import IsAuthenticated
 from .serializers import PasswordChangeSerializer
-from rest_framework.authtoken.models import Token
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-# from .authentication import CustomJWTAuthentication
-from rest_framework.authentication import TokenAuthentication
-
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
-from rest_framework import permissions
-
-from django.http import JsonResponse
 from .serializers import UserPhoneUpdateSerializer
 
 class JWTCREATE(TokenObtainPairView):
