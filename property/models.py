@@ -24,7 +24,7 @@ class PropertyDetails(models.Model):
     size_unit = models.CharField(max_length=20)
     lot_size = models.FloatField()
     rooms = models.IntegerField()
-    bed = models.ImageField()
+    bed = models.IntegerField()
     bath = models.IntegerField()
     floor = models.IntegerField()
     roofing = models.CharField(max_length=100)
