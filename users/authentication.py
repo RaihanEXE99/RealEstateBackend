@@ -22,18 +22,3 @@ class CustomJWTAuthentication(JWTAuthentication):
             return self.get_user(validated_token), validated_token
         except:
             return None
-        
-# class CustomTokenAuthentication(TokenAuthentication):
-#     def authenticate(self, request):
-#         if request.method == 'POST':
-#             # Get the access token from the cookie for POST requests
-#             access_token = request.COOKIES.get('access_token')
-
-#             if not access_token:
-#                 return None
-
-#             # Verify the token and return the user
-#             return self.authenticate_credentials(access_token)
-
-#         # For other HTTP methods, use the default TokenAuthentication behavior
-#         return super().authenticate(request)

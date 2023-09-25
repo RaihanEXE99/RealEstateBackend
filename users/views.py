@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .authentication import CustomJWTAuthentication
+# from .authentication import CustomJWTAuthentication
 from rest_framework.authentication import TokenAuthentication
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
@@ -28,33 +28,7 @@ from .serializers import UserPhoneUpdateSerializer
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
-            access_token = response.data.get('access')
-            refresh_token = response.data.get('refresh')
-            
-            response.set_cookie(
-                'access',
-                access_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-            response.set_cookie(
-                'refresh',
-                refresh_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
-            response['return'] = {
-                "type":"success"
-            }
-            return response
+        return response
 
 class JWTREFRESH(TokenRefreshView):
     def post(self, request, *args, **kwargs):
@@ -64,29 +38,11 @@ class JWTREFRESH(TokenRefreshView):
             request.data['refresh'] = refresh_token
 
         response = super().post(request, *args, **kwargs)
-
-        if response.status_code == 200:
-            access_token = response.data.get('access')
-
-            response.set_cookie(
-                'access',
-                access_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
         return response
 
 class JWTVERIFY(TokenVerifyView):
-    authentication_classes = [CustomJWTAuthentication]
     def post(self, request, *args, **kwargs):
-        access_token = request.COOKIES.get('access')
-        if access_token:
-            request.data['token'] = access_token
-        response =  super().post(request, *args, **kwargs)
+        response = super().post(request, *args, **kwargs)
         return response
 
 class JWTLOGOUT(APIView):
@@ -98,16 +54,12 @@ class JWTLOGOUT(APIView):
         return response
     
 class ChangePasswordView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         serializer = PasswordChangeSerializer(data=request.data)
         if serializer.is_valid():
-            # Check if the old password is correct
             if not request.user.check_password(serializer.validated_data['old_password']):
                 return Response({'detail': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Update the user's password
             request.user.set_password(serializer.validated_data['new_password'])
             request.user.save()
 
@@ -116,17 +68,12 @@ class ChangePasswordView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetUserFullName(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-
     def get(self, request):
         user = request.user
         full_name = user.full_name
         return Response({'full_name': full_name}, status=status.HTTP_200_OK)
 
 class UpdateFullName(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         try:
             user = request.user
@@ -145,26 +92,19 @@ class UpdateFullName(APIView):
 
 
 class GetUserFullName(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-
     def get(self, request):
         user = request.user
         full_name = user.full_name
         return Response({'full_name': full_name}, status=status.HTTP_200_OK)
 
 class ChangePhoneNumberView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request, *args, **kwargs):
-        # Deserialize the request data
         serializer = UserPhoneUpdateSerializer(data=request.data)
         if serializer.is_valid():
             new_phone = serializer.validated_data['phone']
 
-            # Get the authenticated user
             user = self.request.user
 
-            # Update the user's phone number
             user.phone = new_phone
             user.save()
 
