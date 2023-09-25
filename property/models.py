@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import UserAccount
 import uuid
 
 # Create your models here.
@@ -14,7 +14,7 @@ class Address(models.Model):
     
 
 class PropertyDetails(models.Model):
-    id = models.CharField(max_length=50)
+    cid = models.CharField(max_length=50)
     size = models.FloatField()
     size_unit = models.CharField(max_length=20)
     lot_size = models.FloatField()
@@ -27,7 +27,7 @@ class PropertyDetails(models.Model):
 
 class Property(models.Model):
     sku = models.UUIDField(max_length=100, blank=True, unique=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     title = models.CharField(max_length=500)
     price = models.FloatField()
     price_unit = models.CharField(max_length=50)

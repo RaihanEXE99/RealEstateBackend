@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import *
 # Create your views here.
 
-@api_view('GET')
+@api_view(['GET'])
 def property(request, *args, **kwargs):
     sku = request.GET.get('sku')
     try:

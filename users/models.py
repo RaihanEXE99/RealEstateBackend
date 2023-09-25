@@ -31,6 +31,7 @@ class UserAccountManager(BaseUserManager):
             **kwargs
         )
 
+        user.is_active = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
