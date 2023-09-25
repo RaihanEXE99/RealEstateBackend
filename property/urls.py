@@ -20,4 +20,5 @@ from .views import *
 
 urlpatterns = [
     path('property/<str:sku>', property, name='property'),
+    path('all_properties/', property, name='all_properties'),
 ]

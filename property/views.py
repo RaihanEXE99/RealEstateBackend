@@ -9,6 +9,18 @@ from rest_framework.permissions import AllowAny
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def all_properties(request, *args, **kwargs):
+    properties = Property.objects.all()
+    titles = [property.title for property in properties]
+
+    data = {
+        'titles': titles
+    }
+
+    return JsonResponse(data)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, *args, **kwargs):
     sku = request.GET.get('sku')
     data = {}
