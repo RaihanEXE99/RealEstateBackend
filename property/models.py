@@ -2,6 +2,11 @@ from django.db import models
 from users.models import UserAccount
 import uuid
 
+hc_choice=(
+    ('1','No'),
+    ('2','Yes')
+) 
+
 # Create your models here.
 class Address(models.Model):
     house = models.CharField(max_length=100)
@@ -42,7 +47,7 @@ class Property(models.Model):
     desc = models.TextField(max_length=5000)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     details = models.ForeignKey(PropertyDetails, on_delete=models.CASCADE)
-    hide_contact = models.CharField(max_length=10)
+    hide_contact = models.CharField(max_length=10, choices=hc_choice, default=1)
 
 
 class Image(models.Model):
