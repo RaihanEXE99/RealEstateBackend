@@ -10,6 +10,7 @@ from .views import (
 
     UpdateFullName,
     ChangePhoneNumberView,
+    GetUserMe
 )
 
 urlpatterns = [
@@ -21,5 +22,6 @@ urlpatterns = [
     path('change-password/', ChangePasswordView.as_view()),
     path('change-phone/', ChangePhoneNumberView.as_view()),
     path('user/get_full_name/', GetUserFullName.as_view()),
-    path('user/update_full_name/', UpdateFullName.as_view()),    
+    path('user/update_full_name/', UpdateFullName.as_view()),
+    path('user/getUserMe/', GetUserMe.as_view()),
 ]

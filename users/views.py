@@ -55,6 +55,12 @@ class GetUserFullName(APIView):
         full_name = user.full_name
         return Response({'full_name': full_name}, status=status.HTTP_200_OK)
 
+class GetUserMe(APIView):
+    def get(self, request):
+        user = request.user
+        full_name = user.full_name
+        return Response({'full_name': full_name,'email':user.email}, status=status.HTTP_200_OK)
+
 class UpdateFullName(APIView):
     def post(self, request):
         try:
