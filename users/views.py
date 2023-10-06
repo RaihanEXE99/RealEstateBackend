@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import PasswordChangeSerializer
 
 from .serializers import UserPhoneUpdateSerializer
+import re
 
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -61,6 +62,21 @@ class GetUserMe(APIView):
         full_name = user.full_name
         return Response({'full_name': full_name,'email':user.email}, status=status.HTTP_200_OK)
 
+# class UpdateFullName(APIView):
+#     def post(self, request):
+#         try:
+#             user = request.user
+#             new_full_name = request.data.get('new_full_name')
+
+#             if new_full_name:
+#                 user.full_name = new_full_name
+#                 user.save()
+
+#                 return Response({'message': 'Full name updated successfully'}, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({'error': 'New full name is required'}, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class UpdateFullName(APIView):
     def post(self, request):
         try:
@@ -68,10 +84,16 @@ class UpdateFullName(APIView):
             new_full_name = request.data.get('new_full_name')
 
             if new_full_name:
-                user.full_name = new_full_name
-                user.save()
+                # Remove leading and trailing spaces from the full name
+                new_full_name = new_full_name.strip()
 
-                return Response({'message': 'Full name updated successfully'}, status=status.HTTP_200_OK)
+                # Check if the full name contains only letters or hyphens
+                if re.match("^[A-Za-z\-]+$", new_full_name):
+                    user.full_name = new_full_name
+                    user.save()
+                    return Response({'message': 'Full name updated successfully'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'Invalid characters in full name'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'New full name is required'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
