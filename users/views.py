@@ -62,21 +62,6 @@ class GetUserMe(APIView):
         full_name = user.full_name
         return Response({'full_name': full_name,'email':user.email}, status=status.HTTP_200_OK)
 
-# class UpdateFullName(APIView):
-#     def post(self, request):
-#         try:
-#             user = request.user
-#             new_full_name = request.data.get('new_full_name')
-
-#             if new_full_name:
-#                 user.full_name = new_full_name
-#                 user.save()
-
-#                 return Response({'message': 'Full name updated successfully'}, status=status.HTTP_200_OK)
-#             else:
-#                 return Response({'error': 'New full name is required'}, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class UpdateFullName(APIView):
     def post(self, request):
         try:
