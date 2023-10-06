@@ -84,16 +84,19 @@ class UpdateFullName(APIView):
             new_full_name = request.data.get('new_full_name')
 
             if new_full_name:
-                # Remove leading and trailing spaces from the full name
+                # Remove special characters (except spaces) from the full name
+                new_full_name = re.sub(r'[^A-Za-z0-9\s]', '', new_full_name)
+
+                # Remove leading and trailing spaces from the cleaned full name
                 new_full_name = new_full_name.strip()
 
-                # Check if the full name contains only letters or hyphens
-                if re.match("^[A-Za-z\-]+$", new_full_name):
+                # Check if the cleaned full name contains at least one non-space character
+                if re.search("[^\s]", new_full_name):
                     user.full_name = new_full_name
                     user.save()
                     return Response({'message': 'Full name updated successfully'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'error': 'Invalid characters in full name'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'Full name must contain at least one non-space character'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'New full name is required'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
