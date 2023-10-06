@@ -1,3 +1,4 @@
+from requests import Response
 from rest_framework import serializers
 
 class PasswordChangeSerializer(serializers.Serializer):
@@ -11,6 +12,7 @@ class PasswordChangeSerializer(serializers.Serializer):
 
         if len(new_password) < 8:
             raise serializers.ValidationError("New password must be at least 8 characters long.")
+            # raise Response("New password must be at least 8 characters long.")
 
         if new_password != re_new_password:
             raise serializers.ValidationError("New password and confirmation do not match.")

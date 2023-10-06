@@ -38,17 +38,23 @@ class JWTLOGOUT(APIView):
     
 class ChangePasswordView(APIView):
     def post(self, request):
-        serializer = PasswordChangeSerializer(data=request.data)
-        if serializer.is_valid():
-            if not request.user.check_password(serializer.validated_data['old_password']):
-                return Response({'detail': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        re_new_password = request.data.get('re_new_password')
 
-            request.user.set_password(serializer.validated_data['new_password'])
-            request.user.save()
+        if len(new_password) < 8:
+            return Response({'detail': 'New password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({'detail': 'Password successfully changed.'}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if new_password != re_new_password:
+            return Response({'detail': 'New password and confirmation do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not request.user.check_password(old_password):
+            return Response({'detail': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.set_password(new_password)
+        request.user.save()
+
+        return Response({'detail': 'Password successfully changed.'}, status=status.HTTP_200_OK)
 
 class GetUserFullName(APIView):
     def get(self, request):
