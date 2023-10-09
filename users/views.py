@@ -3,8 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .serializers import PasswordChangeSerializer
-
 from .serializers import UserPhoneUpdateSerializer
 import re
 
