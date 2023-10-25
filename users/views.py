@@ -3,8 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from .models import UserProfile
+
 from .serializers import UserPhoneUpdateSerializer
 import re
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny 
 
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -110,3 +115,49 @@ class ChangePhoneNumberView(APIView):
             return Response({"message": "Phone number updated successfully"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def UserProfileDetailView(request, pk):
+    try:
+        profile = UserProfile.objects.get(pk=pk)
+        data = {
+            "name": profile.name,
+            "number": profile.number,
+            "skype_link": profile.skype_link,
+            "facebook_link": profile.facebook_link,
+            "linkedin_link": profile.linkedin_link,
+            "title": profile.title,
+            "email": profile.email,
+            "website": profile.website,
+            "twitter": profile.twitter,
+            "pinterest": profile.pinterest,
+            "description": profile.description,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    except UserProfile.DoesNotExist:
+        return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+class UserProfileCreateUpdateView(APIView):
+    def post(self, request):
+        data = request.data
+        try:
+            profile = UserProfile.objects.get(pk=request.user.id)
+        except UserProfile.DoesNotExist:
+            return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        profile.name = data.get("name", profile.name)
+        profile.number = data.get("number", profile.number)
+        profile.skype_link = data.get("skype_link", profile.skype_link)
+        profile.facebook_link = data.get("facebook_link", profile.facebook_link)
+        profile.linkedin_link = data.get("linkedin_link", profile.linkedin_link)
+        profile.title = data.get("title", profile.title)
+        profile.email = data.get("email", profile.email)
+        profile.website = data.get("website", profile.website)
+        profile.twitter = data.get("twitter", profile.twitter)
+        profile.pinterest = data.get("pinterest", profile.pinterest)
+        profile.description = data.get("description", profile.description)
+
+        profile.save()
+
+        return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)

@@ -4,7 +4,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin
 )
-
+from django.contrib.auth import get_user_model
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
@@ -73,3 +73,20 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    name = models.CharField(max_length=255,blank=True,default="")
+    number = models.CharField(max_length=20, blank=True)
+    skype_link = models.URLField(blank=True)
+    facebook_link = models.URLField(blank=True)
+    linkedin_link = models.URLField(blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    email = models.EmailField(blank=True,default="")
+    website = models.URLField(blank=True)
+    twitter = models.URLField(blank=True)
+    pinterest = models.URLField(blank=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return str(self.user.id)

@@ -10,7 +10,10 @@ from .views import (
 
     UpdateFullName,
     ChangePhoneNumberView,
-    GetUserMe
+    GetUserMe,
+
+    UserProfileDetailView,
+    UserProfileCreateUpdateView
 )
 
 urlpatterns = [
@@ -24,4 +27,8 @@ urlpatterns = [
     path('user/get_full_name/', GetUserFullName.as_view()),
     path('user/update_full_name/', UpdateFullName.as_view()),
     path('user/getUserMe/', GetUserMe.as_view()),
+
+    path('profiles/<int:pk>/', UserProfileDetailView, name='profileDetail'),
+    path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
+    
 ]
