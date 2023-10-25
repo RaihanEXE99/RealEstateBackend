@@ -18,7 +18,7 @@ class UserAccountManager(BaseUserManager):
             email=email,
             **kwargs
         )
-        user.is_active = False
+        user.is_active = True
         user.set_password(password)
         user.save(using=self._db)
 
