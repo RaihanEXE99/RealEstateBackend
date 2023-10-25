@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .models import UserProfile
+from .models import UserProfile,UserAccount
 
 from .serializers import UserPhoneUpdateSerializer
 import re
@@ -121,7 +121,25 @@ class ChangePhoneNumberView(APIView):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def UserProfileDetailView(request, pk):
     try:
-        profile = UserProfile.objects.get(pk=pk)
+        user = UserAccount.objects.filter(id=pk).first()
+        if user is None:
+            # If the UserAccount doesn't exist, return an error response
+            return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        if created:
+            profile.name = ""
+            profile.number = ""
+            profile.skype_link = ""
+            profile.facebook_link = ""
+            profile.linkedin_link = ""
+            profile.title = ""
+            profile.email = ""
+            profile.website = ""
+            profile.twitter = ""
+            profile.pinterest = ""
+            profile.description = ""
+            profile.save()
+        
         data = {
             "name": profile.name,
             "number": profile.number,
