@@ -76,17 +76,17 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    name = models.CharField(max_length=255,blank=True,default="")
-    number = models.CharField(max_length=20, blank=True)
-    skype_link = models.URLField(blank=True)
-    facebook_link = models.URLField(blank=True)
-    linkedin_link = models.URLField(blank=True)
-    title = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(blank=True,default="")
-    website = models.URLField(blank=True)
-    twitter = models.URLField(blank=True)
-    pinterest = models.URLField(blank=True)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=255,blank=True,default="",null=True)
+    number = models.CharField(max_length=20, blank=True,null=True)
+    skype_link = models.URLField(blank=True,null=True)
+    facebook_link = models.URLField(blank=True,null=True)
+    linkedin_link = models.URLField(blank=True,null=True)
+    title = models.CharField(max_length=255, blank=True,null=True)
+    email = models.EmailField(blank=True,default="",null=True)
+    website = models.URLField(blank=True,null=True)
+    twitter = models.URLField(blank=True,null=True)
+    pinterest = models.URLField(blank=True,null=True)
+    description = models.TextField(blank=True,null=True)
 
     def __str__(self):
         return str(self.user.id)
