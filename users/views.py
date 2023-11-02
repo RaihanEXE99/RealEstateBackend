@@ -212,6 +212,7 @@ class OrganizationProfileUpdate(APIView):
             organization.phone = data.get("phone", organization.phone)
             organization.about_organization = data.get("description", organization.about_organization)
             organization.save()
+            
             return Response({
                 "name":organization.name,
                 "phone":organization.phone,
