@@ -76,7 +76,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    name = models.CharField(max_length=255,blank=True,default="",null=True)
+    name = models.CharField(max_length=255,blank=True,null=True)
     number = models.CharField(max_length=20, blank=True,default="",null=True)
     skype_link = models.URLField(blank=True,default="",null=True)
     facebook_link = models.URLField(blank=True,default="",null=True)
@@ -90,3 +90,25 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return str(self.user.id)
+
+class Organization(models.Model):
+    name = models.CharField(max_length=100,default="anonymous")
+    phone = models.CharField(max_length=16, null=True)
+    email = models.EmailField(max_length=255, null=True)
+    about_organization = models.TextField(null=True)
+    agents = models.ManyToManyField('Agent', blank=True,related_name='organizations_associated')
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name
+    
+class Agent(models.Model):
+    name = models.CharField(max_length=60)
+    contact_no = models.CharField(max_length=16, null=True)
+    email = models.EmailField(max_length=255, null=True)
+    about = models.TextField(null=True)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, related_name='agents_associated')
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name

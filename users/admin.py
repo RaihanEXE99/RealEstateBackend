@@ -6,6 +6,6 @@ from .models import *
 user=get_user_model()
 
 admin.site.register(user)
-# admin.site.register(UserAccount)
-# admin.site.register(UserAccountManager)
 admin.site.register(UserProfile)
+admin.site.register(Organization)
+admin.site.register(Agent)

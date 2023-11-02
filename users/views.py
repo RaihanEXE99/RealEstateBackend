@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .models import UserProfile,UserAccount
+from .models import Organization, UserProfile,UserAccount
 
 from .serializers import UserPhoneUpdateSerializer
 import re
@@ -179,3 +179,21 @@ class UserProfileCreateUpdateView(APIView):
         profile.save()
 
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
+    
+
+class OrganizationProfileView(APIView):
+    def get(self, request):
+        user = request.user
+        if user.role=="3":
+            print("Organization")
+            criteria = {
+                'user': user,  # Replace with the desired name
+            }
+            organization, created = Organization.objects.get_or_create(**criteria)
+            print("organization name:",organization.phone)
+            print(type(organization.phone))
+            return Response({"message":"OG 200!"}, status=status.HTTP_200_OK)
+
+        else:
+            print("Not Organization Account")
+            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
