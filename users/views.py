@@ -206,6 +206,11 @@ class OrganizationProfileUpdate(APIView):
         user = request.user
         if user.role=="3":
             organization = Organization.objects.get(user=user)
+            data = request.data
+            organization.name = data.get("name", organization.name)
+            organization.email = data.get("email", organization.number)
+            organization.phone = data.get("phone", organization.phone)
+            organization.about_organization = data.get("description", organization.about_organization)
             return Response({
                 "name":organization.name,
                 "phone":organization.phone,
