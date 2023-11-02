@@ -191,8 +191,12 @@ class OrganizationProfileView(APIView):
             }
             organization, created = Organization.objects.get_or_create(**criteria)
             print("organization name:",organization.phone)
-            print(type(organization.phone))
-            return Response({"message":"OG 200!"}, status=status.HTTP_200_OK)
+            return Response({
+                "name":organization.name,
+                "phone":organization.phone,
+                "email":organization.email,
+                "about_organization":organization.about_organization,
+            }, status=status.HTTP_200_OK)
 
         else:
             print("Not Organization Account")
