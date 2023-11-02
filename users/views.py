@@ -181,7 +181,7 @@ class UserProfileCreateUpdateView(APIView):
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
     
 
-class OrganizationProfileView(APIView):
+class OrganizationBasicView(APIView):
     def get(self, request):
         user = request.user
         if user.role=="3":
@@ -190,7 +190,6 @@ class OrganizationProfileView(APIView):
                 'user': user,  # Replace with the desired name
             }
             organization, created = Organization.objects.get_or_create(**criteria)
-            print("organization name:",organization.phone)
             return Response({
                 "name":organization.name,
                 "phone":organization.phone,
@@ -201,3 +200,46 @@ class OrganizationProfileView(APIView):
         else:
             print("Not Organization Account")
             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+        
+class OrganizationBasicView(APIView):
+    def get(self, request):
+        user = request.user
+        if user.role=="3":
+            print("Organization")
+            criteria = {
+                'user': user,  # Replace with the desired name
+            }
+            organization, created = Organization.objects.get_or_create(**criteria)
+            return Response({
+                "name":organization.name,
+                "phone":organization.phone,
+                "email":organization.email,
+                "about_organization":organization.about_organization,
+            }, status=status.HTTP_200_OK)
+
+        else:
+            print("Not Organization Account")
+            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+
+# class UserProfileCreateUpdateView(APIView):
+#     def post(self, request):
+#         data = request.data
+#         try:
+#             profile = UserProfile.objects.get(pk=request.user.id)
+#         except UserProfile.DoesNotExist:
+#             return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+#         profile.name = data.get("name", profile.name)
+#         profile.number = data.get("number", profile.number)
+#         profile.skype_link = data.get("skype_link", profile.skype_link)
+#         profile.facebook_link = data.get("facebook_link", profile.facebook_link)
+#         profile.linkedin_link = data.get("linkedin_link", profile.linkedin_link)
+#         profile.title = data.get("title", profile.title)
+#         profile.email = data.get("email", profile.email)
+#         profile.website = data.get("website", profile.website)
+#         profile.twitter = data.get("twitter", profile.twitter)
+#         profile.pinterest = data.get("pinterest", profile.pinterest)
+#         profile.description = data.get("description", profile.description)
+
+#         profile.save()
+
+#         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)

@@ -15,7 +15,7 @@ from .views import (
     UserProfileDetailView,
     UserProfileCreateUpdateView,
 
-    OrganizationProfileView
+    OrganizationBasicView
 )
 
 urlpatterns = [
@@ -33,6 +33,6 @@ urlpatterns = [
     path('profiles/<int:pk>/', UserProfileDetailView, name='profileDetail'),
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
 
-    path('organization/profile/', OrganizationProfileView.as_view(), name='profileUpdate'),
+    path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
     
 ]
