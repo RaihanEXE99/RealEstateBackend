@@ -201,25 +201,25 @@ class OrganizationBasicView(APIView):
             print("Not Organization Account")
             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
         
-class OrganizationBasicView(APIView):
-    def get(self, request):
-        user = request.user
-        if user.role=="3":
-            print("Organization")
-            criteria = {
-                'user': user,  # Replace with the desired name
-            }
-            organization, created = Organization.objects.get_or_create(**criteria)
-            return Response({
-                "name":organization.name,
-                "phone":organization.phone,
-                "email":organization.email,
-                "about_organization":organization.about_organization,
-            }, status=status.HTTP_200_OK)
+# class OrganizationBasicView(APIView):
+#     def get(self, request):
+#         user = request.user
+#         if user.role=="3":
+#             print("Organization")
+#             criteria = {
+#                 'user': user,  # Replace with the desired name
+#             }
+#             organization, created = Organization.objects.get_or_create(**criteria)
+#             return Response({
+#                 "name":organization.name,
+#                 "phone":organization.phone,
+#                 "email":organization.email,
+#                 "about_organization":organization.about_organization,
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            print("Not Organization Account")
-            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print("Not Organization Account")
+#             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
 
 # class UserProfileCreateUpdateView(APIView):
 #     def post(self, request):
