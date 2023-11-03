@@ -125,4 +125,4 @@ class Invitation(models.Model):
     is_rejected = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Invitation to {self.organization} for {self.agent.email} : {self.id}'
+        return f'Invitation to {self.organization} for {self.agent.email} : {str(self.id)}'
