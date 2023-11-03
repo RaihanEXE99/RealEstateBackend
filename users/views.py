@@ -347,10 +347,10 @@ class ListInvitationsView(APIView):
             invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False)
         except Agent.DoesNotExist:
             return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
         invitation_list = []
         for invitation in invitations:
             invitation_data = {
+                "id":invitation.id,
                 "organization": invitation.organization.name,
                 "agent_email": invitation.agent.email
             }
@@ -361,7 +361,8 @@ class ListInvitationsView(APIView):
 class AcceptInvitationView(APIView):
     def post(self, request, invitation_id):
         try:
-            invitation = Invitation.objects.get(id=invitation_id, is_accepted=False, is_rejected=False)
+            agent = Agent.objects.get(user=request.user)
+            invitation = Invitation.objects.get(agent=agent,id=invitation_id, is_accepted=False, is_rejected=False)
         except Invitation.DoesNotExist:
             return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
 

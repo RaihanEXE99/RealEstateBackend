@@ -7,6 +7,10 @@ from django.contrib.auth.models import (
 )
 from django.contrib.auth import get_user_model
 
+from base64 import b32encode
+from hashlib import sha1
+from random import random
+
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         if not email:
@@ -113,15 +117,12 @@ class Agent(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Invitation(models.Model):
-    id = models.UUIDField(primary_key=True,
-                      default=uuid.uuid4,
-                      editable=False),
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
     is_accepted = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Invitation to {self.organization} for {self.agent.email}'
+        return f'Invitation to {self.organization} for {self.agent.email} : {self.id}'
