@@ -182,9 +182,9 @@ class UserProfileCreateUpdateView(APIView):
     def post(self, request):
         data = request.data
         try:
-            profile = UserProfile.objects.get(pk=request.user.id)
+            profile = UserProfile.objects.get(user=request.user)
         except UserProfile.DoesNotExist:
-            return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
         profile.name = data.get("name", profile.name)
         profile.number = data.get("number", profile.number)
         profile.skype_link = data.get("skype_link", profile.skype_link)
