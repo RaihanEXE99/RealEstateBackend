@@ -326,7 +326,7 @@ class AddAgentToOrganizationView(APIView):
             organization = Organization.objects.get(user=request.user)
             
             # Check if there's an existing invitation for the same organization and email
-            invitation = Invitation.objects.filter(organization=organization, agent_email=email, is_accepted=False, is_rejected=False).first()
+            invitation = Invitation.objects.filter(organization=organization, email=email, is_accepted=False, is_rejected=False).first()
             if invitation:
                 return Response({'message': f'An invitation to {auser.email} already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
