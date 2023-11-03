@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -295,7 +296,7 @@ class AgentProfileUpdate(APIView):
 def autocomplete_agent_emails(request):
     if request.GET.get('q'):
         query = request.GET['q']
-        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
+        agents = Agent.objects.filter(email__icontains=query).values_list('email', flat=True)
         return JsonResponse(list(agents), safe=False)
     return JsonResponse([], safe=False)
 
