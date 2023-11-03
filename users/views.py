@@ -386,4 +386,10 @@ class RejectInvitationView(APIView):
         invitation.is_rejected = True
         invitation.save()
 
+        try:
+            organization = Organization.objects.get(organization=invitation.organization)
+            organization.agents.remove(invitation.agent)
+        except:
+            return JsonResponse({"message": "Invitation rejected."}, status=status.HTTP_200_OK)
+
         return JsonResponse({"message": "Invitation rejected"}, status=status.HTTP_200_OK)
