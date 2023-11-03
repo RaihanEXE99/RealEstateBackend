@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .models import Organization, UserProfile,UserAccount
+from .models import Agent, Organization, UserProfile,UserAccount
 
 from .serializers import UserPhoneUpdateSerializer
 import re
@@ -244,7 +244,25 @@ class OrganizationProfileUpdate(APIView):
         else:
             print("Not Organization Account")
             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
-        
+
+
+class AddAgentToOrganizationView(APIView):
+    def post(self, request, organization_id):
+        email = request.data.get('email')
+        try:
+            user = UserAccount.objects.get(email=email)
+            organization = Organization.objects.get(id=organization_id)
+            if not Agent.objects.filter(user=user).exists():
+                agent = Agent(user=user, organization=organization)
+                agent.save()
+                # messages.success(request, f'{user.full_name} has been added to {organization.name} as an agent.')
+                return Response({'message': f'{user.full_name} added as an agent'}, status=status.HTTP_201_CREATED)
+            else:
+                # messages.warning(request, f'{user.full_name} is already associated with an organization.')
+                return Response({'message': f'{user.full_name} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+        except UserAccount.DoesNotExist:
+            # messages.error(request, f'User with email {email} does not exist.')
+            return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)       
 # class OrganizationBasicView(APIView):
 #     def get(self, request):
 #         user = request.user
