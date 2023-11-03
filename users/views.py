@@ -330,13 +330,13 @@ class AddAgentToOrganizationView(APIView):
             if invitation:
                 return Response({'message': f'An invitation to {auser.email} already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
-            if not Agent.objects.filter(user=auser).exists():
+            if not auser in organization.agents.all():
                 # Create a new invitation
                 invitation = Invitation(organization=organization, agent=auser)
                 invitation.save()
                 return Response({'message': f'Invitation sent to {auser.email}'}, status=status.HTTP_201_CREATED)
             else:
-                return Response({'message': f'{auser.full_name} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': f'{auser.email} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
         except Agent.DoesNotExist:
             return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
