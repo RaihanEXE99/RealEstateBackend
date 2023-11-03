@@ -17,7 +17,10 @@ from .views import (
 
     OrganizationBasicView,
     OrganizationProfileUpdate,
-    AddAgentToOrganizationView
+    AddAgentToOrganizationView,
+
+    AgentBasicView,
+    AgentProfileUpdate
 )
 
 urlpatterns = [
@@ -37,6 +40,8 @@ urlpatterns = [
 
     path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
     path('organization/profile/update/', OrganizationProfileUpdate.as_view(), name='OrganizationProfileUpdate'),
+    path('agent/profile/', AgentBasicView.as_view(), name='AgentBasicView'),
+    path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
     
 ]
