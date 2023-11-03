@@ -95,7 +95,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=100,default="anonymous")
     phone = models.CharField(max_length=16, null=True)
     email = models.EmailField(max_length=255, null=True)
-    about_organization = models.TextField(null=True)
+    about = models.TextField(null=True)
     agents = models.ManyToManyField('Agent', blank=True,related_name='organizations_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
@@ -104,7 +104,7 @@ class Organization(models.Model):
     
 class Agent(models.Model):
     name = models.CharField(max_length=60)
-    contact_no = models.CharField(max_length=16, null=True)
+    phone = models.CharField(max_length=16, null=True)
     email = models.EmailField(max_length=255, null=True)
     about = models.TextField(null=True)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, related_name='agents_associated')
