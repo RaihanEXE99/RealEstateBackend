@@ -290,6 +290,15 @@ class AgentProfileUpdate(APIView):
             print("Not Agent Account")
             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def autocomplete_agent_emails(request):
+    if request.GET.get('q'):
+        query = request.GET['q']
+        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
+        return JsonResponse(list(agents), safe=False)
+    return JsonResponse([], safe=False)
+
 # class AddAgentToOrganizationView(APIView):
 #     def post(self, request):
 #         email = request.data.get('email')

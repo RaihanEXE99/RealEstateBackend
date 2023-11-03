@@ -17,10 +17,12 @@ from .views import (
 
     OrganizationBasicView,
     OrganizationProfileUpdate,
-    AddAgentToOrganizationView,
 
     AgentBasicView,
-    AgentProfileUpdate
+    AgentProfileUpdate,
+
+    AddAgentToOrganizationView,
+    autocomplete_agent_emails
 )
 
 urlpatterns = [
@@ -43,5 +45,6 @@ urlpatterns = [
     path('agent/profile/', AgentBasicView.as_view(), name='AgentBasicView'),
     path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
-    
+    path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
+
 ]
