@@ -76,7 +76,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    name = models.CharField(max_length=255,blank=True,null=True)
+    name = models.CharField(max_length=255,blank=True,default="anonymous",null=True)
     number = models.CharField(max_length=20, blank=True,default="",null=True)
     skype_link = models.URLField(blank=True,default="",null=True)
     facebook_link = models.URLField(blank=True,default="",null=True)

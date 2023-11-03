@@ -31,7 +31,7 @@ urlpatterns = [
     path('user/update_full_name/', UpdateFullName.as_view()),
     path('user/getUserMe/', GetUserMe.as_view()),
 
-    path('profiles/<int:pk>/', UserProfileDetailView, name='profileDetail'),
+    path('profile/details/', UserProfileDetailView.as_view(), name='profileDetail'),
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
 
     path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
