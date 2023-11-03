@@ -393,3 +393,14 @@ class RejectInvitationView(APIView):
             return JsonResponse({"message": "Invitation rejected."}, status=status.HTTP_200_OK)
 
         return JsonResponse({"message": "Invitation rejected"}, status=status.HTTP_200_OK)
+    
+class AgentListView(APIView):
+    def get(self, request):
+        # Retrieve all agents from the database
+        agents = Agent.objects.all()
+
+        # Convert the queryset to a list of dictionaries
+        agent_list = [model_to_dict(agent) for agent in agents]
+
+        # Return the list of agents as a JSON response
+        return Response(agent_list)

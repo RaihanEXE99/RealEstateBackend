@@ -26,7 +26,8 @@ from .views import (
 
     ListInvitationsView,
     AcceptInvitationView,
-    RejectInvitationView
+    RejectInvitationView,
+    AgentListView
 )
 
 urlpatterns = [
@@ -54,5 +55,7 @@ urlpatterns = [
     path('invitations/', ListInvitationsView.as_view(), name='list_invitations'),
     path('invitation/<int:invitation_id>/accept/', AcceptInvitationView.as_view(), name='accept-invitation'),
     path('invitation/<int:invitation_id>/reject/', RejectInvitationView.as_view(), name='reject-invitation'),
+
+    path('myagents/', AgentListView.as_view(), name='agent-list'),
 
 ]
