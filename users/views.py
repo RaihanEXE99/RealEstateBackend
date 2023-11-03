@@ -116,31 +116,55 @@ class ChangePhoneNumberView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+# FUTURE CODE DONT REMOVE THIS !!!!! 
 
-@api_view(['GET'])
-@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
-def UserProfileDetailView(request, pk):
-    try:
-        user = UserAccount.objects.filter(id=pk).first()
-        if user is None:
-            # If the UserAccount doesn't exist, return an error response
-            return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
-        profile, created = UserProfile.objects.get_or_create(user=user)
-        if created:
-            profile.name = ""
-            profile.number = ""
-            profile.skype_link = ""
-            profile.facebook_link = ""
-            profile.linkedin_link = ""
-            profile.title = ""
-            profile.email = ""
-            profile.website = ""
-            profile.twitter = ""
-            profile.pinterest = ""
-            profile.description = ""
-            profile.save()
+# @api_view(['GET'])
+# @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+# def UserProfileDetailView(request, pk):
+#     try:
+#         user = UserAccount.objects.filter(id=pk).first()
+#         if user is None:
+#             # If the UserAccount doesn't exist, return an error response
+#             return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+#         profile, created = UserProfile.objects.get_or_create(user=user)
+#         if created:
+#             profile.name = ""
+#             profile.number = ""
+#             profile.skype_link = ""
+#             profile.facebook_link = ""
+#             profile.linkedin_link = ""
+#             profile.title = ""
+#             profile.email = ""
+#             profile.website = ""
+#             profile.twitter = ""
+#             profile.pinterest = ""
+#             profile.description = ""
+#             profile.save()
         
-        data = {
+#         data = {
+#             "name": profile.name,
+#             "number": profile.number,
+#             "skype_link": profile.skype_link,
+#             "facebook_link": profile.facebook_link,
+#             "linkedin_link": profile.linkedin_link,
+#             "title": profile.title,
+#             "email": profile.email,
+#             "website": profile.website,
+#             "twitter": profile.twitter,
+#             "pinterest": profile.pinterest,
+#             "description": profile.description,
+#         }
+#         return Response(data, status=status.HTTP_200_OK)
+#     except UserProfile.DoesNotExist:
+#         return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UserProfileDetailView(APIView):
+    def get(self, request):
+        user = request.user
+        profile, created = UserProfile.objects.get_or_create(user=user)
+
+        return Response({
             "name": profile.name,
             "number": profile.number,
             "skype_link": profile.skype_link,
@@ -152,10 +176,7 @@ def UserProfileDetailView(request, pk):
             "twitter": profile.twitter,
             "pinterest": profile.pinterest,
             "description": profile.description,
-        }
-        return Response(data, status=status.HTTP_200_OK)
-    except UserProfile.DoesNotExist:
-        return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        },status=status.HTTP_200_OK)
     
 class UserProfileCreateUpdateView(APIView):
     def post(self, request):
