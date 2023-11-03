@@ -115,10 +115,9 @@ class Agent(models.Model):
         return self.name
     
 class Invitation(models.Model):
-    id = models.UUIDField( 
-         primary_key = True, 
-         default = uuid.uuid4, 
-         editable = False) 
+    id = models.UUIDField(primary_key=True,
+                      default=uuid.uuid4,
+                      editable=False),
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
     is_accepted = models.BooleanField(default=False)
