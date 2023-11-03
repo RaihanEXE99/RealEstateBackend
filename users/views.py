@@ -344,7 +344,7 @@ class ListInvitationsView(APIView):
     def get(self, request):
         try:
             that_agent = Agent.objects.get(user=request.user)
-            invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False)
+            invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False,is_accepted=False)
         except Agent.DoesNotExist:
             return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
         invitation_list = []
@@ -369,6 +369,9 @@ class AcceptInvitationView(APIView):
         # Perform the action to accept the invitation (e.g., set is_accepted to True).
         invitation.is_accepted = True
         invitation.save()
+
+        organization = Organization.objects.get(organization=invitation.organization)
+        organization.agents.add(invitation.agent)
 
         return JsonResponse({"message": "Invitation accepted"}, status=status.HTTP_200_OK)
 
