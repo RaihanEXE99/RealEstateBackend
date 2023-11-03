@@ -255,7 +255,7 @@ class AgentBasicView(APIView):
             criteria = {
                 'user': user,  # Replace with the desired name
             }
-            agent, created = Organization.objects.get_or_create(**criteria)
+            agent, created = Agent.objects.get_or_create(**criteria)
             return Response({
                 "name":agent.name,
                 "phone":agent.phone,
