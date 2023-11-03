@@ -112,3 +112,12 @@ class Agent(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Invitation(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    is_accepted = models.BooleanField(default=False)
+    is_rejected = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Invitation to {self.organization} for {self.agent.email}'

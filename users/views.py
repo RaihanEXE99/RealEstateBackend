@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .models import Agent, Organization, UserProfile,UserAccount
+from .models import Agent, Invitation, Organization, UserProfile,UserAccount
 
 from .serializers import UserPhoneUpdateSerializer
 import re
@@ -290,23 +290,73 @@ class AgentProfileUpdate(APIView):
             print("Not Agent Account")
             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
 
+# class AddAgentToOrganizationView(APIView):
+#     def post(self, request):
+#         email = request.data.get('email')
+#         try:
+#             user = UserAccount.objects.get(email=email)
+#             organization = Organization.objects.get(user=request.user)
+#             if not Agent.objects.filter(user=user).exists():
+#                 agent = Agent(user=user, organization=organization)
+#                 agent.save()
+#                 # messages.success(request, f'{user.full_name} has been added to {organization.name} as an agent.')
+#                 return Response({'message': f'{user.full_name} added as an agent'}, status=status.HTTP_201_CREATED)
+#             else:
+#                 # messages.warning(request, f'{user.full_name} is already associated with an organization.')
+#                 return Response({'message': f'{user.full_name} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+#         except UserAccount.DoesNotExist:
+#             # messages.error(request, f'User with email {email} does not exist.')
+#             return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)     
+
 class AddAgentToOrganizationView(APIView):
     def post(self, request):
         email = request.data.get('email')
         try:
-            user = UserAccount.objects.get(email=email)
+            auser = Agent.objects.get(email=email)
             organization = Organization.objects.get(user=request.user)
-            if not Agent.objects.filter(user=user).exists():
-                agent = Agent(user=user, organization=organization)
-                agent.save()
-                # messages.success(request, f'{user.full_name} has been added to {organization.name} as an agent.')
-                return Response({'message': f'{user.full_name} added as an agent'}, status=status.HTTP_201_CREATED)
+            
+            # Check if there's an existing invitation for the same organization and email
+            invitation = Invitation.objects.filter(organization=organization, agent_email=email, is_accepted=False, is_rejected=False).first()
+            if invitation:
+                return Response({'message': f'An invitation to {auser.email} already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if not Agent.objects.filter(user=auser).exists():
+                # Create a new invitation
+                invitation = Invitation(organization=organization, agent=auser)
+                invitation.save()
+                return Response({'message': f'Invitation sent to {auser.email}'}, status=status.HTTP_201_CREATED)
             else:
-                # messages.warning(request, f'{user.full_name} is already associated with an organization.')
-                return Response({'message': f'{user.full_name} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
-        except UserAccount.DoesNotExist:
-            # messages.error(request, f'User with email {email} does not exist.')
-            return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)       
+                return Response({'message': f'{auser.full_name} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+        except Agent.DoesNotExist:
+            return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # def patch(self, request, organization_id, invitation_id):
+    #     try:
+    #         invitation = Invitation.objects.get(id=invitation_id, organization__id=organization_id, is_accepted=False, is_rejected=False)
+    #         action = request.data.get('action')
+    #         if action == 'accept':
+    #             invitation.is_accepted = True
+    #             invitation.save()
+    #             # Add the agent to the organization
+    #             agent = Agent(user=User.objects.get(email=invitation.agent_email), organization=invitation.organization)
+    #             agent.save()
+    #             messages.success(request, f'Invitation accepted. {invitation.agent_email} is now part of {invitation.organization.name}.')
+    #             return Response({'message': f'Invitation accepted'}, status=status.HTTP_200_OK)
+    #         elif action == 'reject':
+    #             invitation.is_rejected = True
+    #             invitation.save()
+    #             messages.info(request, f'Invitation to {invitation.agent_email} has been rejected.')
+    #             return Response({'message': f'Invitation rejected'}, status=status.HTTP_200_OK)
+    #         else:
+    #             return Response({'message': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Invitation.DoesNotExist:
+    #         return Response({'message': 'Invitation not found'}, status=status.HTTP_404_NOT_FOUND)  
+
+
+
+
+
+
 
 # class OrganizationBasicView(APIView):
 #     def get(self, request):
