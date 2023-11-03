@@ -374,6 +374,8 @@ class AcceptInvitationView(APIView):
         organization = Organization.objects.get(organization=invitation.organization)
         organization.agents.add(invitation.agent)
 
+        organization.save()
+
         return JsonResponse({"message": "Invitation accepted"}, status=status.HTTP_200_OK)
 
 class RejectInvitationView(APIView):
@@ -390,6 +392,7 @@ class RejectInvitationView(APIView):
         try:
             organization = Organization.objects.get(organization=invitation.organization)
             organization.agents.remove(invitation.agent)
+            organization.save()
         except:
             return JsonResponse({"message": "Invitation rejected."}, status=status.HTTP_200_OK)
 
