@@ -22,7 +22,11 @@ from .views import (
     AgentProfileUpdate,
 
     AddAgentToOrganizationView,
-    autocomplete_agent_emails
+    autocomplete_agent_emails,
+
+    ListInvitationsView,
+    AcceptInvitationView,
+    RejectInvitationView
 )
 
 urlpatterns = [
@@ -46,5 +50,9 @@ urlpatterns = [
     path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
     path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
+
+    path('invitations/', ListInvitationsView.as_view(), name='list_invitations'),
+    path('invitation/<int:invitation_id>/accept/', AcceptInvitationView.as_view(), name='accept-invitation'),
+    path('invitation/<int:invitation_id>/reject/', RejectInvitationView.as_view(), name='reject-invitation'),
 
 ]

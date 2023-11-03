@@ -340,6 +340,50 @@ class AddAgentToOrganizationView(APIView):
         except Agent.DoesNotExist:
             return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
+class ListInvitationsView(APIView):
+    def get(self, request):
+        try:
+            that_agent = Agent.objects.get(user=request.user)
+            invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False)
+        except Agent.DoesNotExist:
+            return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        invitation_list = []
+        for invitation in invitations:
+            invitation_data = {
+                "organization": invitation.organization.name,
+                "agent_email": invitation.agent.email
+            }
+            invitation_list.append(invitation_data)
+
+        return JsonResponse(invitation_list, safe=False)
+
+class AcceptInvitationView(APIView):
+    def post(self, request, invitation_id):
+        try:
+            invitation = Invitation.objects.get(id=invitation_id, is_accepted=False, is_rejected=False)
+        except Invitation.DoesNotExist:
+            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Perform the action to accept the invitation (e.g., set is_accepted to True).
+        invitation.is_accepted = True
+        invitation.save()
+
+        return JsonResponse({"message": "Invitation accepted"}, status=status.HTTP_200_OK)
+
+class RejectInvitationView(APIView):
+    def post(self, request, invitation_id):
+        try:
+            invitation = Invitation.objects.get(id=invitation_id, is_accepted=False, is_rejected=False)
+        except Invitation.DoesNotExist:
+            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Perform the action to reject the invitation (e.g., set is_rejected to True).
+        invitation.is_rejected = True
+        invitation.save()
+
+        return JsonResponse({"message": "Invitation rejected"}, status=status.HTTP_200_OK)
+
     # def patch(self, request, organization_id, invitation_id):
     #     try:
     #         invitation = Invitation.objects.get(id=invitation_id, organization__id=organization_id, is_accepted=False, is_rejected=False)
