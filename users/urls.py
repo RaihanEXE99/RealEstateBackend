@@ -56,6 +56,6 @@ urlpatterns = [
     path('invitation/<int:invitation_id>/accept/', AcceptInvitationView.as_view(), name='accept-invitation'),
     path('invitation/<int:invitation_id>/reject/', RejectInvitationView.as_view(), name='reject-invitation'),
 
-    path('myAgents/', AgentListView.as_view(), name='agent-list'),
+    path('myAgents/', AgentListView.as_view(), name='agent_list'),
 
 ]
