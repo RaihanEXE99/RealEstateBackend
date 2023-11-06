@@ -279,7 +279,7 @@ class AddAgentToOrganizationView(APIView):
                 invitation.save()
                 return Response({'message': f'Invitation sent to {auser.email}'}, status=status.HTTP_201_CREATED)
             else:
-                return Response({'message': f'{auser.email} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': f'{auser.user.email} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
         except Agent.DoesNotExist:
             return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -295,7 +295,7 @@ class ListInvitationsView(APIView):
             invitation_data = {
                 "id":invitation.id,
                 "organization": invitation.organization.name,
-                "agent_email": invitation.agent.email
+                "agent_email": invitation.agent.user.email
             }
             invitation_list.append(invitation_data)
 
