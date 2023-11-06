@@ -161,7 +161,109 @@ class UserProfileCreateUpdateView(APIView):
         profile.save()
 
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def autocomplete_agent_emails(request):
+    if request.GET.get('q'):
+        query = request.GET['q']
+        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
+        return JsonResponse(list(agents), safe=False)
+    return JsonResponse([], safe=False)
+
+class AddAgentToOrganizationView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+
+            auser = Agent.objects.get(user__email=email)
+            organization = Organization.objects.get(user=request.user)
+            
+            # Check if there's an existing invitation for the same organization and email
+            invitation = Invitation.objects.filter(organization=organization, agent=auser, is_accepted=False, is_rejected=False).first()
+            if invitation:
+                return Response({'message': f'An invitation to {auser.user.email} already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if not auser in organization.agents.all():
+                # Create a new invitation
+                invitation = Invitation(organization=organization, agent=auser)
+                invitation.save()
+                return Response({'message': f'Invitation sent to {auser.user.email}'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': f'{auser.user.email} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
+        except Agent.DoesNotExist:
+            return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+class ListInvitationsView(APIView):
+    def get(self, request):
+        try:
+            that_agent = Agent.objects.get(user=request.user)
+            invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False,is_accepted=False)
+        except Agent.DoesNotExist:
+            return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        invitation_list = []
+        for invitation in invitations:
+            invitation_data = {
+                "id":invitation.id,
+                "organization": invitation.organization.name,
+                "agent_email": invitation.agent.user.email
+            }
+            invitation_list.append(invitation_data)
+
+        return JsonResponse(invitation_list, safe=False)
+
+class AcceptInvitationView(APIView):
+    def post(self, request, invitation_id):
+        try:
+            agent = Agent.objects.get(user=request.user)
+            invitation = Invitation.objects.get(agent=agent,id=invitation_id, is_accepted=False, is_rejected=False)
+        except Invitation.DoesNotExist:
+            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Perform the action to accept the invitation (e.g., set is_accepted to True).
+        invitation.is_accepted = True
+        invitation.save()
+
+        organization = Organization.objects.get(user=invitation.organization.user)
+        organization.agents.add(invitation.agent)
+
+        organization.save()
+
+        return JsonResponse({"message": "Invitation accepted"}, status=status.HTTP_200_OK)
+
+class RejectInvitationView(APIView):
+    def post(self, request, invitation_id):
+        try:
+            invitation = Invitation.objects.get(id=invitation_id, is_accepted=False, is_rejected=False)
+        except Invitation.DoesNotExist:
+            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Perform the action to reject the invitation (e.g., set is_rejected to True).
+        invitation.is_rejected = True
+        invitation.save()
+
+        try:
+            organization = Organization.objects.get(user=invitation.organization.user)
+            organization.agents.remove(invitation.agent)
+            organization.save()
+        except:
+            return JsonResponse({"message": "Invitation rejected."}, status=status.HTTP_200_OK)
+
+        return JsonResponse({"message": "Invitation rejected"}, status=status.HTTP_200_OK)
     
+class AgentListView(APIView):
+    def get(self, request):
+        user = request.user
+        # Retrieve all agents from the database
+        organization = Organization.objects.get(user=user)
+        agents = Agent.objects.filter(organization=organization)
+
+        # Convert the queryset to a list of dictionaries
+        agent_list = [model_to_dict(agent) for agent in agents]
+
+        # Return the list of agents as a JSON response
+        return Response(agent_list)
+
 # def initAgent(request):
 #     user = request.user
 #     if user.role == "2":
@@ -268,105 +370,3 @@ class UserProfileCreateUpdateView(APIView):
 #         else:
 #             print("Not Agent Account")
 #             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def autocomplete_agent_emails(request):
-    if request.GET.get('q'):
-        query = request.GET['q']
-        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
-        return JsonResponse(list(agents), safe=False)
-    return JsonResponse([], safe=False)
-
-class AddAgentToOrganizationView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        try:
-
-            auser = Agent.objects.get(user__email=email)
-            organization = Organization.objects.get(user=request.user)
-            
-            # Check if there's an existing invitation for the same organization and email
-            invitation = Invitation.objects.filter(organization=organization, agent=auser, is_accepted=False, is_rejected=False).first()
-            if invitation:
-                return Response({'message': f'An invitation to {auser.user.email} already exists'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            if not auser in organization.agents.all():
-                # Create a new invitation
-                invitation = Invitation(organization=organization, agent=auser)
-                invitation.save()
-                return Response({'message': f'Invitation sent to {auser.user.email}'}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({'message': f'{auser.user.email} is already associated with an organization'}, status=status.HTTP_400_BAD_REQUEST)
-        except Agent.DoesNotExist:
-            return Response({'message': f'User with email {email} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-class ListInvitationsView(APIView):
-    def get(self, request):
-        try:
-            that_agent = Agent.objects.get(user=request.user)
-            invitations = Invitation.objects.filter(agent=that_agent, is_rejected=False,is_accepted=False)
-        except Agent.DoesNotExist:
-            return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        invitation_list = []
-        for invitation in invitations:
-            invitation_data = {
-                "id":invitation.id,
-                "organization": invitation.organization.name,
-                "agent_email": invitation.agent.user.email
-            }
-            invitation_list.append(invitation_data)
-
-        return JsonResponse(invitation_list, safe=False)
-
-class AcceptInvitationView(APIView):
-    def post(self, request, invitation_id):
-        try:
-            agent = Agent.objects.get(user=request.user)
-            invitation = Invitation.objects.get(agent=agent,id=invitation_id, is_accepted=False, is_rejected=False)
-        except Invitation.DoesNotExist:
-            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Perform the action to accept the invitation (e.g., set is_accepted to True).
-        invitation.is_accepted = True
-        invitation.save()
-
-        organization = Organization.objects.get(user=invitation.organization.user)
-        organization.agents.add(invitation.agent)
-
-        organization.save()
-
-        return JsonResponse({"message": "Invitation accepted"}, status=status.HTTP_200_OK)
-
-class RejectInvitationView(APIView):
-    def post(self, request, invitation_id):
-        try:
-            invitation = Invitation.objects.get(id=invitation_id, is_accepted=False, is_rejected=False)
-        except Invitation.DoesNotExist:
-            return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Perform the action to reject the invitation (e.g., set is_rejected to True).
-        invitation.is_rejected = True
-        invitation.save()
-
-        try:
-            organization = Organization.objects.get(user=invitation.organization.user)
-            organization.agents.remove(invitation.agent)
-            organization.save()
-        except:
-            return JsonResponse({"message": "Invitation rejected."}, status=status.HTTP_200_OK)
-
-        return JsonResponse({"message": "Invitation rejected"}, status=status.HTTP_200_OK)
-    
-class AgentListView(APIView):
-    def get(self, request):
-        user = request.user
-        # Retrieve all agents from the database
-        organization = Organization.objects.get(user=user)
-        agents = Agent.objects.filter(organization=organization)
-
-        # Convert the queryset to a list of dictionaries
-        agent_list = [model_to_dict(agent) for agent in agents]
-
-        # Return the list of agents as a JSON response
-        return Response(agent_list)
