@@ -256,7 +256,7 @@ class UserProfileCreateUpdateView(APIView):
 def autocomplete_agent_emails(request):
     if request.GET.get('q'):
         query = request.GET['q']
-        agents = Agent.objects.filter(user__email__icontains=query).values_list('email', flat=True)
+        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
         return JsonResponse(list(agents), safe=False)
     return JsonResponse([], safe=False)
 
