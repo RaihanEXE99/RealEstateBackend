@@ -26,7 +26,16 @@ class UserAccountManager(BaseUserManager):
         user.is_active = False
         user.set_password(password)
         user.save(using=self._db)
-
+        if user.role=="2":
+            agent,create = Agent.objects.get_or_create(user__email=user.email)
+            agent.user = user
+            agent.save()
+        elif user.role=="3":
+            organization,create = Organization.objects.get_or_create(user__email=user.email)
+            organization.user = user
+            organization.save()
+        profile,create = UserProfile.objects.get_or_create(user=user)
+        profile.save()
         return user
 
     def create_superuser(self, email, password=None, **kwargs):
@@ -97,10 +106,7 @@ class UserProfile(models.Model):
         return str(self.user.id)
 
 class Organization(models.Model):
-    name = models.CharField(max_length=100,default="anonymous")
-    # phone = models.CharField(max_length=16, null=True)
-    # email = models.EmailField(max_length=255, null=True)
-    # about = models.TextField(null=True)
+    name = models.CharField(max_length=25,default="anonymous")
     agents = models.ManyToManyField('Agent', blank=True,related_name='organizations_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
@@ -108,10 +114,7 @@ class Organization(models.Model):
         return self.name
     
 class Agent(models.Model):
-    name = models.CharField(max_length=60)
-    # phone = models.CharField(max_length=16, null=True)
-    # email = models.EmailField(max_length=255, null=True)
-    # about = models.TextField(null=True)
+    name = models.CharField(max_length=25,default="anonymous")
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, related_name='agents_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 

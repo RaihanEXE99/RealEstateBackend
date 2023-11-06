@@ -1,5 +1,6 @@
 from django.forms import model_to_dict
 from django.http import JsonResponse
+import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -161,7 +162,24 @@ class UserProfileCreateUpdateView(APIView):
 
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
     
-
+# def initAgent(request):
+#     user = request.user
+#     if user.role == "2":
+#         agent,create = Agent.objects.get_or_create(user__email=user.email)
+#         agent.user = user
+#         agent.save()
+#         return True
+#     else:
+#         return False
+# def initOrganization(request):
+#     user = request.user
+#     if user.role == "3":
+#         organization,create = Organization.objects.get_or_create(user__email=user.email)
+#         organization.user = user
+#         organization.save()
+#         return True
+#     else:
+#         return Response("Invalid Request!(Its not an Organization Account)",status=status.HTTP_400_CREATED)
 # class OrganizationBasicView(APIView):
 #     def get(self, request):
 #         user = request.user
