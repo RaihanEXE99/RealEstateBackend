@@ -98,9 +98,9 @@ class UserProfile(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=100,default="anonymous")
-    phone = models.CharField(max_length=16, null=True)
-    email = models.EmailField(max_length=255, null=True)
-    about = models.TextField(null=True)
+    # phone = models.CharField(max_length=16, null=True)
+    # email = models.EmailField(max_length=255, null=True)
+    # about = models.TextField(null=True)
     agents = models.ManyToManyField('Agent', blank=True,related_name='organizations_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
@@ -109,9 +109,9 @@ class Organization(models.Model):
     
 class Agent(models.Model):
     name = models.CharField(max_length=60)
-    phone = models.CharField(max_length=16, null=True)
-    email = models.EmailField(max_length=255, null=True)
-    about = models.TextField(null=True)
+    # phone = models.CharField(max_length=16, null=True)
+    # email = models.EmailField(max_length=255, null=True)
+    # about = models.TextField(null=True)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, related_name='agents_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 

@@ -117,48 +117,6 @@ class ChangePhoneNumberView(APIView):
             return Response({"message": "Phone number updated successfully"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-# FUTURE CODE DONT REMOVE THIS !!!!! 
-
-# @api_view(['GET'])
-# @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
-# def UserProfileDetailView(request, pk):
-#     try:
-#         user = UserAccount.objects.filter(id=pk).first()
-#         if user is None:
-#             # If the UserAccount doesn't exist, return an error response
-#             return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
-#         profile, created = UserProfile.objects.get_or_create(user=user)
-#         if created:
-#             profile.name = ""
-#             profile.number = ""
-#             profile.skype_link = ""
-#             profile.facebook_link = ""
-#             profile.linkedin_link = ""
-#             profile.title = ""
-#             profile.email = ""
-#             profile.website = ""
-#             profile.twitter = ""
-#             profile.pinterest = ""
-#             profile.description = ""
-#             profile.save()
-        
-#         data = {
-#             "name": profile.name,
-#             "number": profile.number,
-#             "skype_link": profile.skype_link,
-#             "facebook_link": profile.facebook_link,
-#             "linkedin_link": profile.linkedin_link,
-#             "title": profile.title,
-#             "email": profile.email,
-#             "website": profile.website,
-#             "twitter": profile.twitter,
-#             "pinterest": profile.pinterest,
-#             "description": profile.description,
-#         }
-#         return Response(data, status=status.HTTP_200_OK)
-#     except UserProfile.DoesNotExist:
-#         return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserProfileDetailView(APIView):
@@ -204,100 +162,101 @@ class UserProfileCreateUpdateView(APIView):
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
     
 
-class OrganizationBasicView(APIView):
-    def get(self, request):
-        user = request.user
-        if user.role=="3":
-            print("Organization")
-            criteria = {
-                'user': user,  # Replace with the desired name
-            }
-            organization, created = Organization.objects.get_or_create(**criteria)
-            return Response({
-                "name":organization.name,
-                "phone":organization.phone,
-                "email":organization.email,
-                "about":organization.about,
-            }, status=status.HTTP_200_OK)
+# class OrganizationBasicView(APIView):
+#     def get(self, request):
+#         user = request.user
+#         if user.role=="3":
+#             print("Organization")
+#             criteria = {
+#                 'user': user,  # Replace with the desired name
+#             }
+#             organization, created = Organization.objects.get_or_create(**criteria)
+#             userPorfile = UserProfile.objects.get(user=user)
+#             return Response({
+#                 "name":organization.name,
+#                 "number":userPorfile.number,
+#                 "email":userPorfile.email,
+#                 "about":userPorfile.about,
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            print("Not Organization Account")
-            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print("Not Organization Account")
+#             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
         
-class OrganizationProfileUpdate(APIView):
-    def post(self, request):
-        user = request.user
-        if user.role=="3":
-            organization = Organization.objects.get(user=user)
-            data = request.data
-            organization.name = data.get("name", organization.name)
-            organization.email = data.get("email", organization.email)
-            organization.phone = data.get("phone", organization.phone)
-            organization.about = data.get("description", organization.about)
-            organization.save()
+# class OrganizationProfileUpdate(APIView):
+#     def post(self, request):
+#         user = request.user
+#         if user.role=="3":
+#             organization = Organization.objects.get(user=user)
+#             data = request.data
+#             organization.name = data.get("name", organization.name)
+#             organization.email = data.get("email", organization.email)
+#             organization.phone = data.get("phone", organization.phone)
+#             organization.about = data.get("description", organization.about)
+#             organization.save()
             
-            return Response({
-                "name":organization.name,
-                "phone":organization.phone,
-                "email":organization.email,
-                "about":organization.about,
-            }, status=status.HTTP_200_OK)
+#             return Response({
+#                 "name":organization.name,
+#                 "phone":organization.phone,
+#                 "email":organization.email,
+#                 "about":organization.about,
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            print("Not Organization Account")
-            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print("Not Organization Account")
+#             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
 
 
-#AGENT
-class AgentBasicView(APIView):
-    def get(self, request):
-        user = request.user
-        if user.role=="2":
-            print("Agent")
-            criteria = {
-                'user': user,  # Replace with the desired name
-            }
-            agent, created = Agent.objects.get_or_create(**criteria)
-            return Response({
-                "name":agent.name,
-                "phone":agent.phone,
-                "email":agent.email,
-                "about":agent.about,
-            }, status=status.HTTP_200_OK)
+# #AGENT
+# class AgentBasicView(APIView):
+#     def get(self, request):
+#         user = request.user
+#         if user.role=="2":
+#             print("Agent")
+#             criteria = {
+#                 'user': user,  # Replace with the desired name
+#             }
+#             agent, created = Agent.objects.get_or_create(**criteria)
+#             return Response({
+#                 "name":agent.name,
+#                 "phone":agent.phone,
+#                 "email":agent.email,
+#                 "about":agent.about,
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            print("Not Agent Account")
-            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print("Not Agent Account")
+#             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
         
-class AgentProfileUpdate(APIView):
-    def post(self, request):
-        user = request.user
-        if user.role=="2":
-            agent = Agent.objects.get(user=user)
-            data = request.data
-            agent.name = data.get("name", agent.name)
-            agent.email = data.get("email", agent.email)
-            agent.phone = data.get("phone", agent.phone)
-            agent.about = data.get("about", agent.about)
-            agent.save()
+# class AgentProfileUpdate(APIView):
+#     def post(self, request):
+#         user = request.user
+#         if user.role=="2":
+#             agent = Agent.objects.get(user=user)
+#             data = request.data
+#             agent.name = data.get("name", agent.name)
+#             agent.email = data.get("email", agent.email)
+#             agent.phone = data.get("phone", agent.phone)
+#             agent.about = data.get("about", agent.about)
+#             agent.save()
             
-            return Response({
-                "name":agent.name,
-                "phone":agent.phone,
-                "email":agent.email,
-                "about":agent.about,
-            }, status=status.HTTP_200_OK)
+#             return Response({
+#                 "name":agent.name,
+#                 "phone":agent.phone,
+#                 "email":agent.email,
+#                 "about":agent.about,
+#             }, status=status.HTTP_200_OK)
 
-        else:
-            print("Not Agent Account")
-            return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             print("Not Agent Account")
+#             return Response({"message": "Invalid Request"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def autocomplete_agent_emails(request):
     if request.GET.get('q'):
         query = request.GET['q']
-        agents = Agent.objects.filter(email__icontains=query).values_list('email', flat=True)
+        agents = Agent.objects.filter(user__email__icontains=query).values_list('email', flat=True)
         return JsonResponse(list(agents), safe=False)
     return JsonResponse([], safe=False)
 
@@ -305,7 +264,8 @@ class AddAgentToOrganizationView(APIView):
     def post(self, request):
         email = request.data.get('email')
         try:
-            auser = Agent.objects.get(email=email)
+
+            auser = Agent.objects.get(user__email=email)
             organization = Organization.objects.get(user=request.user)
             
             # Check if there's an existing invitation for the same organization and email

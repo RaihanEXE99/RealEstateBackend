@@ -15,11 +15,11 @@ from .views import (
     UserProfileDetailView,
     UserProfileCreateUpdateView,
 
-    OrganizationBasicView,
-    OrganizationProfileUpdate,
+    # OrganizationBasicView,
+    # OrganizationProfileUpdate,
 
-    AgentBasicView,
-    AgentProfileUpdate,
+    # AgentBasicView,
+    # AgentProfileUpdate,
 
     AddAgentToOrganizationView,
     autocomplete_agent_emails,
@@ -45,10 +45,10 @@ urlpatterns = [
     path('profile/details/', UserProfileDetailView.as_view(), name='profileDetail'),
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
 
-    path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
-    path('organization/profile/update/', OrganizationProfileUpdate.as_view(), name='OrganizationProfileUpdate'),
-    path('agent/profile/', AgentBasicView.as_view(), name='AgentBasicView'),
-    path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
+    # path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
+    # path('organization/profile/update/', OrganizationProfileUpdate.as_view(), name='OrganizationProfileUpdate'),
+    # path('agent/profile/', AgentBasicView.as_view(), name='AgentBasicView'),
+    # path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
     path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
 
