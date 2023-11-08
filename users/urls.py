@@ -27,7 +27,15 @@ from .views import (
     ListInvitationsView,
     AcceptInvitationView,
     RejectInvitationView,
-    AgentListView
+    AgentListView,
+
+    # ConversationView,
+    # ConversationListView,
+    # SendMessageView,
+
+    MessagesListView,
+    UserListsView,
+    InboxView
 )
 
 urlpatterns = [
@@ -45,10 +53,6 @@ urlpatterns = [
     path('profile/details/', UserProfileDetailView.as_view(), name='profileDetail'),
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
 
-    # path('organization/profile/', OrganizationBasicView.as_view(), name='OrganizationBasicView'),
-    # path('organization/profile/update/', OrganizationProfileUpdate.as_view(), name='OrganizationProfileUpdate'),
-    # path('agent/profile/', AgentBasicView.as_view(), name='AgentBasicView'),
-    # path('agent/profile/update/', AgentProfileUpdate.as_view(), name='AgentProfileUpdate'),
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
     path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
 
@@ -57,5 +61,13 @@ urlpatterns = [
     path('invitation/<int:invitation_id>/reject/', RejectInvitationView.as_view(), name='reject-invitation'),
 
     path('myAgents/', AgentListView.as_view(), name='agent_list'),
+
+    path('messageList/', MessagesListView.as_view(), name='message_list'),
+    path('meet/', UserListsView.as_view(), name='users_list'),
+
+    # path('conversation/', ConversationView.as_view(), name='conversation-view'),
+    # path('conversations/', ConversationListView.as_view(), name='conversation-list'),
+    # path('send-message/', SendMessageView.as_view(), name='send-message'),
+    path('inbox/<str:id>/', InboxView.as_view(), name='inbox'),
 
 ]

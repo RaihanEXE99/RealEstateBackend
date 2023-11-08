@@ -6,13 +6,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .models import Agent, Invitation, Organization, UserProfile,UserAccount
+from .models import Agent,Message, Invitation, Organization, UserProfile,UserAccount
 
-from .serializers import UserPhoneUpdateSerializer
+from .serializers import MessageSerializer, UserAccountSerializer, UserPhoneUpdateSerializer
 import re
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny 
+
+from django.shortcuts import get_object_or_404
 
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -264,6 +266,169 @@ class AgentListView(APIView):
         # Return the list of agents as a JSON response
         return Response(agent_list)
 
+class MessagesListView(APIView):
+    def get(self, request):
+        user = UserAccount.objects.get(pk=request.user.pk)  # get your primary key
+        messages = Message.get_message_list(user) # get all messages between you and the other user
+
+        other_users = [] # list of other users
+
+        # getting the other person's name fromthe message list and adding them to a list
+        for i in range(len(messages)):
+            if messages[i].sender != user:
+                other_users.append(messages[i].sender)
+            else:
+                other_users.append(messages[i].recipient)
+                
+        mserializer = MessageSerializer(messages, many=True)
+        userializer = UserAccountSerializer(other_users,many=True)
+        context= {}
+        context['messages_list'] = mserializer.data
+        context['other_users'] = userializer.data
+        context['you'] = user.email
+        print(context)
+        return Response(context)
+
+class UserListsView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(UserAccount, pk=request.user.pk)
+        users = UserAccount.objects.exclude(pk=user.pk)
+
+        user_data = []  # List to store user data
+        for u in users:
+            user_data.append({
+                'id': u.id,
+                'email': u.email,
+                'full_name':u.full_name
+                # Add other fields as needed
+            })
+
+        return Response({'users': user_data}, status=status.HTTP_200_OK)
+    
+class InboxView(APIView):
+
+    def get(self, request, id, *args, **kwargs):
+        user = get_object_or_404(UserAccount, id=id)
+        current_user = get_object_or_404(UserAccount, pk=request.user.pk)
+        messages = Message.get_all_messages(current_user, user)
+
+        message_data = []
+
+        for message in messages:
+            message_data.append({
+                "id":message.id,
+                'sender_id': message.sender.id,
+                'recipient_id': message.recipient.id,
+                'sender': message.sender.full_name,
+                'recipient':message.recipient.full_name,
+                'message': message.message,
+                'timestamp': message.date.strftime('%Y-%m-%d %H:%M:%S'),
+                # Add other message-related fields as needed
+            })
+
+        return Response({'messages': message_data}, status=status.HTTP_200_OK)
+
+    def post(self, request, id, *args, **kwargs):
+        current_user = get_object_or_404(UserAccount, pk=request.user.pk)
+        recipient = get_object_or_404(UserAccount, id=id)
+        message_text = request.data.get('message')
+
+        if not request.user.is_authenticated:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if message_text and request.method == 'POST':
+            message = Message.objects.create(sender=current_user, recipient=recipient, message=message_text)
+            message_data = {
+                'sender_id': message.sender.id,
+                'recipient_id': message.recipient.id,
+                'sender': message.sender.full_name,
+                'recipient':message.recipient.full_name,
+                'message': message.message,
+                'timestamp': message.date.strftime('%Y-%m-%d %H:%M:%S'),
+                # 'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                # Add other message-related fields as needed
+            }
+            return Response({'message': message_data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Invalid message data'}, status=status.HTTP_400_BAD_REQUEST)
+
+# class ConversationView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         receiver_email = request.query_params['q']
+#         receiver = UserAccount.objects.filter(email=receiver_email).first()
+#         if not receiver:
+#             return Response({"detail": "Receiver not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         user = request.user
+
+#         if(receiver_email==user.email):return Response({"error":"Can't send text to your self!"})
+#         # Check if a conversation exists between the user and the receiver
+#         conversation = Conversation.objects.filter(participants=user).filter(participants=receiver).first()
+
+#         if not conversation:
+#             # If no conversation exists, create a new one
+#             conversation = Conversation.objects.create()
+#             conversation.participants.add(user, receiver)
+#             conversation.save()
+
+#         messages = Message.objects.filter(conversation=conversation)
+#         for msg in messages:
+#             print(msg)
+#         return Response({
+#             "id":conversation.id,
+#             "msg":[msg.sender.email+":"+msg.text for msg in messages]
+#         })
+
+# class SendMessageView(APIView):
+#     def post(self, request):
+#         sender = request.user
+#         receiver_email = request.data.get('receiver_email')
+#         text = request.data.get('text')
+#         if(receiver_email==sender.email):return Response({"error":"Can't send text to your self!"})
+
+#         # Find the receiver by email
+#         receiver = UserAccount.objects.filter(email=receiver_email).first()
+#         if not receiver:
+#             return Response({"detail": "Receiver not found."}, status=status.HTTP_400_BAD_REQUEST)
+        
+#         # Check if a conversation exists between the sender and receiver
+#         conversation = Conversation.objects.filter(participants=sender).filter(participants=receiver).first()
+        
+#         if len(conversation.participants.all())==1:return Response({"error":"Can't send text to your self!"})
+
+#         if not conversation:
+#             # If no conversation exists, create a new one
+#             conversation = Conversation.objects.create()
+#             conversation.participants.add(sender, receiver)
+
+#         # Create a new message in the conversation
+#         if len(conversation.participants.all())==1:return Response({"error":"Can't send text to your self!"})
+#         message = Message.objects.create(conversation=conversation, sender=sender, text=text)
+
+#         return Response({"detail": "Message sent successfully."}, status=status.HTTP_201_CREATED)
+    
+# class ConversationListView(APIView):
+#     def get(self, request):
+#         # Ensure the user is authenticated
+#         if not request.user.is_authenticated:
+#             return Response({"detail": "Authentication required."}, status=status.HTTP_403_FORBIDDEN)
+
+#         # Retrieve all conversations where the user is a participant
+#         user = request.user
+#         conversations = Conversation.objects.filter(participants=user)
+
+#         # Prepare a list of conversation data
+#         conversation_data = []
+#         for conversation in conversations:
+#             participants = [participant.email for participant in conversation.participants.all()]
+#             conversation_data.append({
+#                 "id": conversation.id,
+#                 "participants": participants,
+#                 "created_at": conversation.created_at,
+#             })
+
+#         return Response(conversation_data)
+    
 # def initAgent(request):
 #     user = request.user
 #     if user.role == "2":
