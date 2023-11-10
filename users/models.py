@@ -112,7 +112,7 @@ class Organization(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.name
+        return str(self.user.id)
     
 class Agent(models.Model):
     # name = models.CharField(max_length=25,default="anonymous")
@@ -120,7 +120,7 @@ class Agent(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.name
+        str(self.user.id)
 
 class Invitation(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
