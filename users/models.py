@@ -107,7 +107,6 @@ class UserProfile(models.Model):
         return str(self.user)
 
 class Organization(models.Model):
-    # name = models.CharField(max_length=25,default="anonymous")
     agents = models.ManyToManyField('Agent', blank=True,related_name='organizations_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
@@ -115,12 +114,11 @@ class Organization(models.Model):
         return str(self.user)
     
 class Agent(models.Model):
-    # name = models.CharField(max_length=25,default="anonymous")
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, related_name='agents_associated')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        str(self.user.id)
+        return str(self.user)
 
 class Invitation(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
