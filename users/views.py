@@ -261,7 +261,7 @@ class AgentListView(APIView):
         user = request.user
         # Retrieve all agents from the database
         organization = Organization.objects.get(user=user)
-        agents = Agent.objects.filter(organization=organization)
+        agents = organization.agents.all()
 
         # Convert the queryset to a list of dictionaries
         agent_list = [model_to_dict(agent) for agent in agents]
