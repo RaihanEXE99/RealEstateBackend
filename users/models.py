@@ -118,7 +118,7 @@ class Agent(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.user)
+        return "User:"+str(self.user)+"---"+"Agent ID: "+str(self.id)
 
 class Invitation(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)

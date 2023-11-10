@@ -273,6 +273,19 @@ class AgentListView(APIView):
         # Return the list of agents as a JSON response
         return Response(ag)
 
+class RemoveAgentFromOrganization(APIView):
+    def post(self, request, id):
+        try:
+            organization = get_object_or_404(Organization, user__id=request.user.id)
+            agent = get_object_or_404(Agent, user__id=id)
+
+            organization.agents.remove(agent)
+            organization.save()
+
+            return Response({"data":"Agent removed from the organization."})
+        except:
+            return Response({"data":"Something went wrong!"})
+
 class MessagesListView(APIView):
     def get(self, request):
         user = UserAccount.objects.get(pk=request.user.pk)  # get your primary key

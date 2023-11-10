@@ -38,7 +38,8 @@ from .views import (
     InboxView,
 
     getAgentProfile,
-    getOrganizationProfile
+    getOrganizationProfile,
+    RemoveAgentFromOrganization
 )
 
 urlpatterns = [
@@ -57,6 +58,7 @@ urlpatterns = [
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
 
     path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
+    path('removeAgent/<int:id>/', RemoveAgentFromOrganization.as_view(), name='RemoveAgentFromOrganization'),
     path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
 
     path('invitations/', ListInvitationsView.as_view(), name='list_invitations'),
