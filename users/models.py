@@ -87,7 +87,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["full_name", "phone", "role"]
 
     def __str__(self):
-        return self.email + " ->" + self.id
+        return self.email + " ->" + str(self.id)
     
 class UserProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
