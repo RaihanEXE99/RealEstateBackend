@@ -12,6 +12,8 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Property, Address, PropertyDetails
+
+from rest_framework.views import APIView
 # Create your views here.
 
 @api_view(['GET'])
@@ -54,11 +56,11 @@ def property(request, sku):
         return Response({'error': 'Property Not Found!'}, status="404")
     
 
-class PropertyCreateView(generics.CreateAPIView):
+class PropertyCreateView(APIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         address_data = request.data.get('address')
         details_data = request.data.get('details')
         
