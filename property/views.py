@@ -6,6 +6,12 @@ from django.forms.models import model_to_dict
 from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny 
+
+from .serializer import AddressSerializer, PropertyDetailsSerializer,PropertySerializer
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.response import Response
+from .models import Property, Address, PropertyDetails
 # Create your views here.
 
 @api_view(['GET'])
@@ -48,6 +54,33 @@ def property(request, sku):
         return Response({'error': 'Property Not Found!'}, status="404")
     
 
+class PropertyCreateView(generics.CreateAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
+
+    def create(self, request, *args, **kwargs):
+        address_data = request.data.get('address')
+        details_data = request.data.get('details')
+        
+        address_serializer = AddressSerializer(data=address_data)
+        details_serializer = PropertyDetailsSerializer(data=details_data)
+        
+        if address_serializer.is_valid() and details_serializer.is_valid():
+            address_instance = address_serializer.save()
+            details_instance = details_serializer.save()
+            
+            property_data = request.data
+            property_data['address'] = address_instance.id
+            property_data['details'] = details_instance.id
+            
+            property_serializer = self.get_serializer(data=property_data)
+            if property_serializer.is_valid():
+                property = property_serializer.save()
+                headers = self.get_success_headers(property_serializer.data)
+                return Response(property_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        
+        return Response(property_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 # @api_view(['GET'])
 # def property(request, *args, **kwargs):
 #     sku = request.GET.get('sku')
