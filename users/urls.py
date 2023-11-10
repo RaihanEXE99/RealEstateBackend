@@ -35,7 +35,10 @@ from .views import (
 
     MessagesListView,
     UserListsView,
-    InboxView
+    InboxView,
+
+    getAgentProfile,
+    getOrganizationProfile
 )
 
 urlpatterns = [
@@ -69,5 +72,6 @@ urlpatterns = [
     # path('conversations/', ConversationListView.as_view(), name='conversation-list'),
     # path('send-message/', SendMessageView.as_view(), name='send-message'),
     path('inbox/<str:id>/', InboxView.as_view(), name='inbox'),
-
+    path('getAgentProfile/<int:id>',getAgentProfile,name="getAgentProfile"),
+    path('getOrganizationProfile/<int:id>',getOrganizationProfile,name="getOrganizationProfile")
 ]

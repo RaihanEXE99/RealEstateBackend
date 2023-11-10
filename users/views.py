@@ -1,3 +1,4 @@
+import json
 from django.forms import model_to_dict
 from django.http import JsonResponse
 import requests
@@ -8,13 +9,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Agent,Message, Invitation, Organization, UserProfile,UserAccount
 
-from .serializers import MessageSerializer, UserAccountSerializer, UserPhoneUpdateSerializer
+from .serializers import MessageSerializer, UserAccountSerializer, UserPhoneUpdateSerializer, UserProfileSerializer
 import re
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny 
 
 from django.shortcuts import get_object_or_404
+
+from django.core.serializers import serialize
 
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -351,6 +354,48 @@ class InboxView(APIView):
             return Response({'message': message_data}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': 'Invalid message data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def getAgentProfile(request,id, *args, **kwargs):
+    try:
+        profile = UserProfile.objects.get(user__id=id)
+        # Serialize the UserProfile instance to JSON
+        serialized_data = serialize('json', [profile, ])
+
+        # Convert serialized data to Python dictionary
+        deserialized_data = json.loads(serialized_data)
+
+        # Extract the fields you need or return the entire data
+        user_profile_data = deserialized_data[0]['fields']
+        user_profile_data['user']=id
+
+        # Return the serialized data in JSON format
+        return JsonResponse(user_profile_data)
+    except Exception as error:
+        print(error)
+        return Response({"error":"Invalid ID/Something wrong happend!"})
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def getOrganizationProfile(request,id, *args, **kwargs):
+    try:
+        profile = UserProfile.objects.get(user__id=id)
+        # Serialize the UserProfile instance to JSON
+        serialized_data = serialize('json', [profile, ])
+
+        # Convert serialized data to Python dictionary
+        deserialized_data = json.loads(serialized_data)
+
+        # Extract the fields you need or return the entire data
+        user_profile_data = deserialized_data[0]['fields']
+        user_profile_data['user']=id
+
+        # Return the serialized data in JSON format
+        return JsonResponse(user_profile_data)
+    except Exception as error:
+        print(error)
+        return Response({"error":"Invalid ID/Something wrong happend!"})
 
 # class ConversationView(APIView):
 #     def get(self, request, *args, **kwargs):
