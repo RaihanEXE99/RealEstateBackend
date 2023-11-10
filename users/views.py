@@ -263,11 +263,15 @@ class AgentListView(APIView):
         organization = Organization.objects.get(user=user)
         agents = organization.agents.all()
 
-        # Convert the queryset to a list of dictionaries
-        agent_list = [model_to_dict(agent) for agent in agents]
+        ag = []
+        for agent in agents:
+            profile = UserProfile.objects.get(id=agent.user.id)
+            print(profile)
+            serializer  = UserProfileSerializer(profile)
+            ag.append(serializer.data)
 
         # Return the list of agents as a JSON response
-        return Response(agent_list)
+        return Response(ag)
 
 class MessagesListView(APIView):
     def get(self, request):
