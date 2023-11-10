@@ -57,31 +57,12 @@ def property(request, sku):
     
 
 class PropertyCreateView(APIView):
-    queryset = Property.objects.all()
-    serializer_class = PropertySerializer
-
-    def post(self, request, *args, **kwargs):
-        address_data = request.data.get('address')
-        details_data = request.data.get('details')
-        
-        address_serializer = AddressSerializer(data=address_data)
-        details_serializer = PropertyDetailsSerializer(data=details_data)
-        
-        if address_serializer.is_valid() and details_serializer.is_valid():
-            address_instance = address_serializer.save()
-            details_instance = details_serializer.save()
-            
-            property_data = request.data
-            property_data['address'] = address_instance.id
-            property_data['details'] = details_instance.id
-            
-            property_serializer = self.get_serializer(data=property_data)
-            if property_serializer.is_valid():
-                property = property_serializer.save()
-                headers = self.get_success_headers(property_serializer.data)
-                return Response(property_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        
-        return Response(property_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        serializer = PropertySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # @api_view(['GET'])
 # def property(request, *args, **kwargs):
