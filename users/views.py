@@ -359,6 +359,7 @@ class InboxView(APIView):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def getAgentProfile(request,id, *args, **kwargs):
     try:
+        Agent.objects.get(user__id=id)
         profile = UserProfile.objects.get(user__id=id)
         # Serialize the UserProfile instance to JSON
         serialized_data = serialize('json', [profile, ])
@@ -380,6 +381,7 @@ def getAgentProfile(request,id, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def getOrganizationProfile(request,id, *args, **kwargs):
     try:
+        Organization.objects.get(user__id=id)
         profile = UserProfile.objects.get(user__id=id)
         # Serialize the UserProfile instance to JSON
         serialized_data = serialize('json', [profile, ])
