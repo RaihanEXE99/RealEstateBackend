@@ -104,7 +104,7 @@ class UserProfile(models.Model):
     description = models.TextField(blank=True,default="",null=True)
 
     def __str__(self):
-        return str(self.user.id)
+        return str(self.user)
 
 class Organization(models.Model):
     # name = models.CharField(max_length=25,default="anonymous")
@@ -112,7 +112,7 @@ class Organization(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.user.id)
+        return str(self.user)
     
 class Agent(models.Model):
     # name = models.CharField(max_length=25,default="anonymous")
