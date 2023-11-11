@@ -9,7 +9,7 @@ hc_choice=(
 
 # Create your models here.
 class Address(models.Model):
-    # house = models.CharField(max_length=100)
+    house = models.CharField(max_length=100)
     street = models.CharField(max_length=200)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
