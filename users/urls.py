@@ -13,7 +13,33 @@ from .views import (
     GetUserMe,
 
     UserProfileDetailView,
-    UserProfileCreateUpdateView
+    UserProfileCreateUpdateView,
+
+    # OrganizationBasicView,
+    # OrganizationProfileUpdate,
+
+    # AgentBasicView,
+    # AgentProfileUpdate,
+
+    AddAgentToOrganizationView,
+    autocomplete_agent_emails,
+
+    ListInvitationsView,
+    AcceptInvitationView,
+    RejectInvitationView,
+    AgentListView,
+
+    # ConversationView,
+    # ConversationListView,
+    # SendMessageView,
+
+    MessagesListView,
+    UserListsView,
+    InboxView,
+
+    getAgentProfile,
+    getOrganizationProfile,
+    RemoveAgentFromOrganization
 )
 
 urlpatterns = [
@@ -28,7 +54,26 @@ urlpatterns = [
     path('user/update_full_name/', UpdateFullName.as_view()),
     path('user/getUserMe/', GetUserMe.as_view()),
 
-    path('profiles/<int:pk>/', UserProfileDetailView, name='profileDetail'),
+    path('profile/details/', UserProfileDetailView.as_view(), name='profileDetail'),
     path('profile/update/', UserProfileCreateUpdateView.as_view(), name='profileUpdate'),
-    
+
+    path('addAgent/', AddAgentToOrganizationView.as_view(), name='AddAgentToOrganizationView'),
+    path('removeAgent/<int:id>/', RemoveAgentFromOrganization.as_view(), name='RemoveAgentFromOrganization'),
+    path('autocomplete_agent_emails/', autocomplete_agent_emails, name='autocomplete_agent_emails'),
+
+    path('invitations/', ListInvitationsView.as_view(), name='list_invitations'),
+    path('invitation/<int:invitation_id>/accept/', AcceptInvitationView.as_view(), name='accept-invitation'),
+    path('invitation/<int:invitation_id>/reject/', RejectInvitationView.as_view(), name='reject-invitation'),
+
+    path('myAgents/', AgentListView.as_view(), name='agent_list'),
+
+    path('messageList/', MessagesListView.as_view(), name='message_list'),
+    path('meet/', UserListsView.as_view(), name='users_list'),
+
+    # path('conversation/', ConversationView.as_view(), name='conversation-view'),
+    # path('conversations/', ConversationListView.as_view(), name='conversation-list'),
+    # path('send-message/', SendMessageView.as_view(), name='send-message'),
+    path('inbox/<str:id>/', InboxView.as_view(), name='inbox'),
+    path('getAgentProfile/<int:id>',getAgentProfile,name="getAgentProfile"),
+    path('getOrganizationProfile/<int:id>',getOrganizationProfile,name="getOrganizationProfile")
 ]

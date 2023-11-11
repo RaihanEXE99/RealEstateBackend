@@ -6,7 +6,6 @@ from django.forms.models import model_to_dict
 from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny 
-import math
 # Create your views here.
 
 
@@ -70,6 +69,14 @@ def property(request, sku):
         return Response({'error': 'Property Not Found!'}, status="404")
     
 
+class PropertyCreateView(APIView):
+    def post(self, request, format=None):
+        serializer = PropertySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 # @api_view(['GET'])
 # def property(request, *args, **kwargs):
 #     sku = request.GET.get('sku')
