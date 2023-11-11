@@ -9,9 +9,8 @@ hc_choice=(
 
 # Create your models here.
 class Address(models.Model):
-    house = models.CharField(max_length=100)
+    # house = models.CharField(max_length=100)
     street = models.CharField(max_length=200)
-    area = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
@@ -20,15 +19,17 @@ class Address(models.Model):
 
 class PropertyDetails(models.Model):
     cid = models.CharField(max_length=50)
-    size = models.FloatField()
     size_unit = models.CharField(max_length=20)
-    lot_size = models.FloatField()
+    size = models.FloatField()
     rooms = models.IntegerField()
     bed = models.IntegerField()
     bath = models.IntegerField()
     floor = models.IntegerField()
-    roofing = models.CharField(max_length=100)
+    built = models.IntegerField(null=True)
     structure = models.CharField(max_length=100)
+    garage = models.CharField(max_length=10, choices=hc_choice, default=2)
+    garage_size = models.FloatField(null=True)
+    available_from = models.DateField(null=True)
 
 class Property(models.Model):
     sku = models.UUIDField(max_length=100, blank=True, unique=True, default=uuid.uuid4, editable=False)

@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from .models import UserProfile,UserAccount
@@ -179,3 +180,18 @@ class UserProfileCreateUpdateView(APIView):
         profile.save()
 
         return Response({"message": "User profile created/updated successfully"}, status=status.HTTP_201_CREATED)
+
+
+def getAgents(request, *args, **kwargs):
+    if request.method == 'Get':
+        id = request.GET.get('id')
+        organization = UserAccount.objects.get(id=id)
+        agents = UserAccount.objects.filter(role='2')
+        
+        names = [agent.full_name for agent in agents]
+
+        data = {
+            'titles': names
+        }
+
+        return JsonResponse(data)

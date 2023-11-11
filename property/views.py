@@ -6,7 +6,29 @@ from django.forms.models import model_to_dict
 from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny 
+import math
 # Create your views here.
+
+
+def prop_search(request, *args, **kwargs):
+    if request.method == "GET":
+        lat = request.GET.get('lat')
+        lng = request.GET.get('lng')
+
+        lat_min = lat - 0.090
+        lat_max = lat + 0.090
+        lng_min = lng - (0.045 / math.cos(lat*math.pi/180))
+        lng_max = lng + (0.045 / math.cos(lat*math.pi/180))
+
+        properties = Property.objects.filter(lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
+
+        titles = [property.title for property in properties]
+
+        data = {
+            'titles': titles
+        }
+
+        return JsonResponse(data)
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
