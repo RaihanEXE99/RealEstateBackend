@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Property, Address, PropertyDetails
+from .models import Property, Address, PropertyDetails, Image, Video
 from django.db import transaction
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -30,3 +30,15 @@ class PropertySerializer(serializers.ModelSerializer):
 
             property = Property.objects.create(address=address, details=details, **validated_data)
             return property
+        
+from .models import Image
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ['property', 'image']
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ['property', 'video']
