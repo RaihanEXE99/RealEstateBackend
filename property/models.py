@@ -40,6 +40,7 @@ class Property(models.Model):
     price_type = models.CharField(max_length=30)
     thumbnail = models.ImageField(upload_to='thumbnail/')
     property_category = models.CharField(max_length=50)
+    property_status = models.CharField(max_length=50)
     post_type = models.CharField(max_length=100)
     loc = models.CharField(max_length=500)
     lat = models.CharField(max_length=100)
