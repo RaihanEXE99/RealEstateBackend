@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Property, Address, PropertyDetails
+from django.db import transaction
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,11 +21,12 @@ class PropertySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        address_data = validated_data.pop('address')
-        details_data = validated_data.pop('details')
+        with transaction.atomic():
+            address_data = validated_data.pop('address')
+            details_data = validated_data.pop('details')
 
-        address = Address.objects.create(**address_data)
-        details = PropertyDetails.objects.create(**details_data)
+            address = Address.objects.create(**address_data)
+            details = PropertyDetails.objects.create(**details_data)
 
-        property = Property.objects.create(address=address, details=details, **validated_data)
-        return property
+            property = Property.objects.create(address=address, details=details, **validated_data)
+            return property
