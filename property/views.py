@@ -22,9 +22,9 @@ def prop_search(request, *args, **kwargs):
     if request.method == "GET":
         lat = request.GET.get('lat')
         lng = request.GET.get('long')
-        loc = request.GET.get('loc')
+        loc = request.GET.get('location')
         tp = request.GET.get('type')
-        cat = request.GET.get('cat')
+        cat = request.GET.get('category')
         lat = float(lat)
         lng = float(lng)
 
