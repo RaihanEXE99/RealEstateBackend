@@ -7,12 +7,6 @@ hc_choice=(
     ('2','Yes')
 ) 
 
-class Image(models.Model):
-    image = models.ImageField(upload_to='pimages/')
-
-class Video(models.Model):
-    video = models.ImageField(upload_to='pvideo/')
-
 # Create your models here.
 class Address(models.Model):
     house = models.CharField(max_length=100)
