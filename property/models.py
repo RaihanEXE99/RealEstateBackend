@@ -25,7 +25,6 @@ class PropertyDetails(models.Model):
     bath = models.IntegerField()
     floor = models.IntegerField()
     built = models.IntegerField(null=True)
-    structure = models.CharField(max_length=100)
     garage = models.CharField(max_length=10, choices=hc_choice, default=2)
     garage_size = models.FloatField(null=True)
     available_from = models.DateField(null=True)
