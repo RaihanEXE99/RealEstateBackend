@@ -29,10 +29,10 @@ def prop_search(request, *args, **kwargs):
         lat = float(lat)
         lng = float(lng)
 
-        lat_min = lat - 0.090
-        lat_max = lat + 0.090
-        lng_min = lng - (0.045 / math.cos(lat*math.pi/180))
-        lng_max = lng + (0.045 / math.cos(lat*math.pi/180))
+        lat_min = lat - 0.045
+        lat_max = lat + 0.045
+        lng_min = lng - (0.0225 / math.cos(lat*math.pi/180))
+        lng_max = lng + (0.0225 / math.cos(lat*math.pi/180))
 
         properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
 
