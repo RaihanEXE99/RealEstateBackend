@@ -21,14 +21,17 @@ import math
 def prop_search(request, *args, **kwargs):
     if request.method == "GET":
         lat = request.GET.get('lat')
-        lng = request.GET.get('lng')
+        lng = request.GET.get('long')
+        loc = request.GET.get('loc')
+        tp = request.GET.get('type')
+        cat = request.GET.get('cat')
 
         lat_min = lat - 0.090
         lat_max = lat + 0.090
         lng_min = lng - (0.045 / math.cos(lat*math.pi/180))
         lng_max = lng + (0.045 / math.cos(lat*math.pi/180))
 
-        properties = Property.objects.filter(lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
+        properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
 
         titles = [property.title for property in properties]
 
