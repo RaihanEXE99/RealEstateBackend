@@ -34,7 +34,7 @@ def prop_search(request, *args, **kwargs):
         lng_min = lng - (0.045 / math.cos(lat*math.pi/180))
         lng_max = lng + (0.045 / math.cos(lat*math.pi/180))
 
-        properties = Property.objects.filter(post_type=tp, property_category=cat)
+        properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
 
         titles = [property.title for property in properties]
 
