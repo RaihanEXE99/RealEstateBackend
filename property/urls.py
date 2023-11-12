@@ -19,7 +19,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('search', prop_search, name="search"),
+    path('search/', prop_search, name="search"),
     path('property/<str:sku>', property, name='property'),
     path('all_properties/', all_properties, name='all_properties'),
     path('add-property/', PropertyCreateView.as_view(), name='all_properties'),
