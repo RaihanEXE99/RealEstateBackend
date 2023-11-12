@@ -7,12 +7,6 @@ hc_choice=(
     ('2','Yes')
 ) 
 
-class Image(models.Model):
-    image = models.ImageField(upload_to='pimages/')
-
-class Video(models.Model):
-    video = models.ImageField(upload_to='pvideo/')
-
 # Create your models here.
 class Address(models.Model):
     house = models.CharField(max_length=100)
@@ -37,6 +31,12 @@ class PropertyDetails(models.Model):
     garage_size = models.FloatField(null=True)
     available_from = models.DateField(null=True)
 
+class Image(models.Model):
+    image = models.ImageField(upload_to='pimages/')
+
+class Video(models.Model):
+    video = models.ImageField(upload_to='pvideo/')
+
 class Property(models.Model):
     sku = models.UUIDField(max_length=100, blank=True, unique=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
@@ -58,10 +58,8 @@ class Property(models.Model):
     images = models.ManyToManyField(Image)
     video = models.OneToOneField(Video, on_delete=models.CASCADE)
     hide_contact = models.CharField(max_length=10, choices=hc_choice, default=1)
+    images = models.ManyToManyField(Image,blank=True,default=None)
+    video = models.OneToOneField(Video, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.sku)
-
-
-
-

@@ -6,7 +6,7 @@ from .models import *
 user=get_user_model()
 
 admin.site.register(user)
-# admin.site.register(UserProfile)
+admin.site.register(UserProfile)
 admin.site.register(Organization)
 admin.site.register(Agent)
 admin.site.register(Invitation)
