@@ -25,6 +25,8 @@ def prop_search(request, *args, **kwargs):
         loc = request.GET.get('loc')
         tp = request.GET.get('type')
         cat = request.GET.get('cat')
+        lat = float(lat)
+        lng = float(lng)
 
         lat_min = lat - 0.090
         lat_max = lat + 0.090
