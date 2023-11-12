@@ -17,7 +17,8 @@ from rest_framework.views import APIView
 import math
 # Create your views here.
 
-
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def prop_search(request, *args, **kwargs):
     if request.method == "GET":
         lat = request.GET.get('lat')
