@@ -12,6 +12,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Property, Address, PropertyDetails
+from django.core.serializers import serialize
 
 from rest_framework.views import APIView
 import math
@@ -48,11 +49,7 @@ def prop_search(request, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def all_properties(request, *args, **kwargs):
     properties = Property.objects.all()
-    titles = [property.title for property in properties]
-
-    data = {
-        'titles': titles
-    }
+    data = serialize('json', properties)
 
     return JsonResponse(data)
 
@@ -63,7 +60,7 @@ def homeProp(request, *args, **kwargs):
         'props': properties
     }
 
-    return JsonResponse(data)
+    return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
