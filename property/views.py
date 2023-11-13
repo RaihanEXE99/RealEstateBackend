@@ -61,29 +61,9 @@ def all_properties(request, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
-
-    for prop in properties:
-        prop.address = 'lolll'
-        prop.details = serializers.serialize('json', prop.details)
-
-    # Serialize properties
-    properties_json = serializers.serialize('json', properties)
-    properties_data = json.loads(properties_json)
-
-    # Serialize related objects and merge
-    for prop_data in properties_data:
-        prop = Property.objects.get(pk=prop_data['pk'])
-
-        # Assuming 'address' and 'details' are related objects
-        if hasattr(prop, 'address'):
-            address_json = serializers.serialize('json', [prop.address])
-            prop_data['fields']['address'] = json.loads(address_json)[0]
-
-        if hasattr(prop, 'details'):
-            details_json = serializers.serialize('json', [prop.details])
-            prop_data['fields']['details'] = json.loads(details_json)[0]
-
-    return JsonResponse(properties_data, safe=False)
+    data = serializers.serialize('json', list(properties))
+    data = json.loads(data)
+    return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
