@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import Property, Address, PropertyDetails
 from django.core.serializers import serialize
-
+from rest_framework import serializers
 from rest_framework.views import APIView
 import math
 # Create your views here.
