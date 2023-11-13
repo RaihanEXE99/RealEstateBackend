@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-
+from django.core import serializers
 from .serializer import AddressSerializer, PropertyDetailsSerializer,PropertySerializer
 from rest_framework import generics
 from rest_framework import status
@@ -49,16 +49,19 @@ def prop_search(request, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def all_properties(request, *args, **kwargs):
     properties = Property.objects.all()
-    data = serialize('json', properties)
+    
+    titles = [property.title for property in properties]
+
+    data = {
+        'titles': titles
+    }
 
     return JsonResponse(data)
 
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
-    data = {
-        'props': properties
-    }
+    data = serializers.serialize('json', properties)
 
     return JsonResponse(data, safe=False)
 
