@@ -61,7 +61,7 @@ def all_properties(request, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
-    data = serializers.serialize('json', properties)
+    data = serializers.serialize('json', list(properties))
 
     return JsonResponse(data, safe=False)
 
