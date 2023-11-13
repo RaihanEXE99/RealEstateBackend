@@ -62,7 +62,7 @@ def all_properties(request, *args, **kwargs):
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
     data = serializers.serialize('json', list(properties))
-
+    data = json.loads(data)
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
