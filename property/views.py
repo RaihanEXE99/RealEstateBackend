@@ -58,12 +58,33 @@ def all_properties(request, *args, **kwargs):
 
     return JsonResponse(data)
 
+# Serializer for Address
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
+
+# Serializer for Details
+class DetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyDetails
+        fields = '__all__'
+
+# Serializer for Property
+class PropertySerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    details = DetailsSerializer()
+
+    class Meta:
+        model = Property
+        fields = '__all__'
+
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
-    data = serializers.serialize('json', list(properties))
-    data = json.loads(data)
-    return JsonResponse(data, safe=False)
+    # Use the custom serializer
+    property_serializer = PropertySerializer(properties, many=True)
+    return JsonResponse(property_serializer.data, safe=False)
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
