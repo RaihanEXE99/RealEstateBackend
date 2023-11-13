@@ -55,7 +55,16 @@ def all_properties(request, *args, **kwargs):
     }
 
     return JsonResponse(data)
-    
+
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def homeProp(request, *args, **kwargs):
+    properties = Property.objects.all()[:9]
+    data = {
+        'props': properties
+    }
+
+    return JsonResponse(data)
+
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, sku):
