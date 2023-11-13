@@ -63,7 +63,7 @@ def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
 
     for prop in properties:
-        prop.address = serializers.serialize('json', prop.address)
+        prop.address = 'lolll'
         prop.details = serializers.serialize('json', prop.details)
 
     # Serialize properties
