@@ -136,3 +136,13 @@ class PropertySerializer(serializers.ModelSerializer):
         property_instance.save()
 
         return property_instance
+    
+
+# Serializer for Property
+class PropertySerializerAll(serializers.ModelSerializer):
+    address = AddressSerializer()
+    details = PropertyDetailsSerializer()
+
+    class Meta:
+        model = Property
+        fields = '__all__'

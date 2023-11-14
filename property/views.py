@@ -7,7 +7,7 @@ from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from django.core import serializers
-from .serializer import AddressSerializer, PropertyDetailsSerializer,PropertySerializer
+from .serializer import AddressSerializer, PropertyDetailsSerializer,PropertySerializer,PropertySerializerAll
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
@@ -58,32 +58,10 @@ def all_properties(request, *args, **kwargs):
 
     return JsonResponse(data)
 
-# Serializer for Address
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = '__all__'
-
-# Serializer for Details
-class DetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PropertyDetails
-        fields = '__all__'
-
-# Serializer for Property
-class PropertySerializer(serializers.ModelSerializer):
-    address = AddressSerializer()
-    details = DetailsSerializer()
-
-    class Meta:
-        model = Property
-        fields = '__all__'
-
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
     properties = Property.objects.all()[:9]
-    # Use the custom serializer
-    property_serializer = PropertySerializer(properties, many=True)
+    property_serializer = PropertySerializerAll(properties, many=True)
     return JsonResponse(property_serializer.data, safe=False)
 
 @api_view(['GET'])
