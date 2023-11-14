@@ -231,7 +231,6 @@ class AcceptInvitationView(APIView):
         try:
             agent = Agent.objects.get(user=request.user)
             invitation = Invitation.objects.get(agent=agent,id=invitation_id, is_accepted=False, is_rejected=False)
-            return JsonResponse({"message": "Congratulation. You have been added to the organization"}, status=status.HTTP_404_NOT_FOUND)
         except Invitation.DoesNotExist:
             return JsonResponse({"error": "Invitation does not exist or has already been accepted/rejected"}, status=status.HTTP_404_NOT_FOUND)
 
