@@ -20,6 +20,22 @@ import math
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+def ploygon_s(request, *args, **kwargs):
+    if request.method == "GET":
+        minlat = request.GET.get('minlat')
+        maxlat = request.GET.get('maxlat')
+        minlng = request.GET.get('minlong')
+        maxlng = request.GET.get('maxlong')
+        tp = request.GET.get('type')
+        cat = request.GET.get('category')
+
+        properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=minlat, lat__lte=maxlat, long__gte=minlng, long__lte=maxlng)
+
+        property_serializer = PropertySerializerAll(properties, many=True)
+
+        return JsonResponse(property_serializer.data, safe=False)
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def prop_search(request, *args, **kwargs):
     if request.method == "GET":
         lat = request.GET.get('lat')
@@ -37,26 +53,19 @@ def prop_search(request, *args, **kwargs):
 
         properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
 
-        titles = [property.title for property in properties]
+        property_serializer = PropertySerializerAll(properties, many=True)
 
-        data = {
-            'titles': titles
-        }
-
-        return JsonResponse(data)
+        return JsonResponse(property_serializer.data, safe=False)
 
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def all_properties(request, *args, **kwargs):
     properties = Property.objects.all()
     
-    titles = [property.title for property in properties]
+    property_serializer = PropertySerializerAll(properties, many=True)
 
-    data = {
-        'titles': titles
-    }
+    return JsonResponse(property_serializer.data, safe=False)
 
-    return JsonResponse(data)
 
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def homeProp(request, *args, **kwargs):
@@ -67,29 +76,14 @@ def homeProp(request, *args, **kwargs):
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, sku):
-    # sku = request.GET.get('sku')
-    data = {}
-    try:
-        print('Try running')
-        p = Property.objects.all().first()
-        print(p)
-    except:
-        print('ex running')
-        p = None
+    if request.method == "GET":
+        sku = request.GET.get('sku')
 
-    if p:
-        data = model_to_dict(p)
-        data['thumbnail'] = data['thumbnail'].url
-        data['address'] = model_to_dict(p.address)
-        data['details'] = model_to_dict(p.details)
-        print(data)
+        property = Property.objects.get(sku=sku)
 
-        # Image field files cannot be shown as a JSON response
-        return Response(data) #Temporary Check
-    
-    else:
+        property_serializer = PropertySerializerAll(property, many=True)
+        return JsonResponse(property_serializer.data, safe=False)
 
-        return Response({'error': 'Property Not Found!'}, status="404")
     
 
 class PropertyCreateView(APIView):
