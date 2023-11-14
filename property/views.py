@@ -43,13 +43,15 @@ def prop_search(request, *args, **kwargs):
         loc = request.GET.get('location')
         tp = request.GET.get('type')
         cat = request.GET.get('category')
+        rad = request.GET.get('radius')
+        rad = float(rad)
         lat = float(lat)
         lng = float(lng)
 
-        lat_min = lat - 0.045
-        lat_max = lat + 0.045
-        lng_min = lng - (0.0225 / math.cos(lat*math.pi/180))
-        lng_max = lng + (0.0225 / math.cos(lat*math.pi/180))
+        lat_min = lat - (0.009 * rad)
+        lat_max = lat + (0.009 * rad)
+        lng_min = lng - (((0.009 * rad) / 2) / math.cos(lat*math.pi/180))
+        lng_max = lng + (((0.009 * rad) / 2) / math.cos(lat*math.pi/180))
 
         properties = Property.objects.filter(post_type=tp, property_category=cat, lat__gte=lat_min, lat__lte=lat_max, long__gte=lng_min, long__lte=lng_max)
 
