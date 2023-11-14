@@ -173,14 +173,15 @@ class UserProfileCreateUpdateView(APIView):
 def autocomplete_agent_emails(request):
     if request.GET.get('q'):
         query = request.GET['q']
-        agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
+        # agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email','user__full_name', flat=True)
+        agents = Agent.objects.filter(user__email__icontains=query)
         alist = []
         for agent in agents:
             alist.append({
                 "name":agent.user.full_name,
-                "email":agent.user.email
+                "email":agent.user.email,
             })
-        return JsonResponse(list(agents), safe=False)
+        return JsonResponse(alist, safe=False)
     return JsonResponse([], safe=False)
 
 class AddAgentToOrganizationView(APIView):
