@@ -216,10 +216,10 @@ class ListInvitationsView(APIView):
             return JsonResponse({"error": "Agent does not exist"}, status=status.HTTP_404_NOT_FOUND)
         invitation_list = []
         for invitation in invitations:
-            organization_name = UserProfile.objects.get(user=invitation.organization.user)
+            organizationProfile = UserProfile.objects.get(user=invitation.organization.user)
             invitation_data = {
                 "id":invitation.id,
-                "organization": organization_name,
+                "organization": organizationProfile.name,
                 "agent_email": invitation.agent.user.email
             }
             invitation_list.append(invitation_data)
