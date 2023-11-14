@@ -78,13 +78,11 @@ def homeProp(request, *args, **kwargs):
 @api_view(['GET'])
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, sku):
-    if request.method == "GET":
-        sku = request.GET.get('sku')
 
-        property = Property.objects.get(sku=sku)
+    property = Property.objects.get(sku=sku)
 
-        property_serializer = PropertySerializerAll(property, many=True)
-        return JsonResponse(property_serializer.data, safe=False)
+    property_serializer = PropertySerializerAll(property, many=True)
+    return JsonResponse(property_serializer.data, safe=False)
 
     
 
