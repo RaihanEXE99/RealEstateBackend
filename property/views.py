@@ -44,7 +44,7 @@ def prop_search(request, *args, **kwargs):
         tp = request.GET.get('type')
         cat = request.GET.get('category')
         rad = request.GET.get('radius')
-        rad = float(rad)
+        rad = float(rad if rad==None else 10.00)
         lat = float(lat)
         lng = float(lng)
 
