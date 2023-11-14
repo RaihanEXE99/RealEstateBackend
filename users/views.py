@@ -174,6 +174,12 @@ def autocomplete_agent_emails(request):
     if request.GET.get('q'):
         query = request.GET['q']
         agents = Agent.objects.filter(user__email__icontains=query).values_list('user__email', flat=True)
+        alist = []
+        for agent in agents:
+            alist.append({
+                "name":agent.user.full_name,
+                "email":agent.user.email
+            })
         return JsonResponse(list(agents), safe=False)
     return JsonResponse([], safe=False)
 

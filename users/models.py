@@ -70,12 +70,12 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         default='1'
     )
     
-    contact_email = models.EmailField(max_length=255, null=True)
-    contact_phone = models.CharField(max_length=16, null=True)
-    skype_url = models.URLField(max_length=200, null=True)
-    facebook_url = models.URLField(max_length=200, null=True)
-    website = models.URLField(max_length=200, null=True)
-    description = models.TextField(null=True)
+    # contact_email = models.EmailField(max_length=255, null=True)
+    # contact_phone = models.CharField(max_length=16, null=True)
+    # skype_url = models.URLField(max_length=200, null=True)
+    # facebook_url = models.URLField(max_length=200, null=True)
+    # website = models.URLField(max_length=200, null=True)
+    # description = models.TextField(null=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
