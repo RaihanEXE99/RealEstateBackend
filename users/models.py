@@ -70,6 +70,8 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         default='1'
     )
 
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True, default='default_avatar.jpg')
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
