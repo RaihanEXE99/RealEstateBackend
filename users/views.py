@@ -335,7 +335,6 @@ class UserListsView(APIView):
         return Response({'users': user_data}, status=status.HTTP_200_OK)
     
 class InboxView(APIView):
-
     def get(self, request, id, *args, **kwargs):
         user = get_object_or_404(UserAccount, id=id)
         current_user = get_object_or_404(UserAccount, pk=request.user.pk)
