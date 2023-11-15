@@ -143,7 +143,7 @@ class PropertySerializerAll(serializers.ModelSerializer):
     address = AddressSerializer()
     details = PropertyDetailsSerializer()
     images = ImageSerializer(many=True)
-    video = VideoSerializer()
+    video = VideoSerializer(many=True)
 
     class Meta:
         model = Property
