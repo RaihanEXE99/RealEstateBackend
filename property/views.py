@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 import json
 from rest_framework.response import Response
@@ -95,6 +95,12 @@ class PropertyCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MyProperty(APIView):
+    def get(self, request, *args, **kwargs):
+        properties = Property.objects.filter(user=request.user)
+        property_serializer = PropertySerializerAll(properties, many=True)
+        return JsonResponse(property_serializer.data, safe=False)
 
     # def post(self, request, format=None):
     #     # Extract data from the request

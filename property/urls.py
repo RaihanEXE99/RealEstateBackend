@@ -23,5 +23,6 @@ urlpatterns = [
     path('property/<str:sku>', property, name='property'),
     path('all_properties/', all_properties, name='all_properties'),
     path('add-property/', PropertyCreateView.as_view(), name='all_properties'),
-    path('hprop/', homeProp, name='homeProp')
+    path('hprop/', homeProp, name='homeProp'),
+    path('myProperty/', MyProperty.as_view(), name='myProperty')
 ]

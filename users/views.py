@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Agent,Message, Invitation, Organization, UserProfile,UserAccount
 
-from .serializers import MessageSerializer, UserAccountSerializer, UserPhoneUpdateSerializer, UserProfileSerializer
+from .serializers import MessageSerializer, UserAccountSerializer, UserPhoneUpdateSerializer, UserProfilePictureSerializer, UserProfileSerializer
 import re
 
 from rest_framework.decorators import api_view, permission_classes
@@ -19,6 +19,9 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 
 from django.core.serializers import serialize
+
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 class JWTCREATE(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -335,7 +338,6 @@ class UserListsView(APIView):
         return Response({'users': user_data}, status=status.HTTP_200_OK)
     
 class InboxView(APIView):
-
     def get(self, request, id, *args, **kwargs):
         user = get_object_or_404(UserAccount, id=id)
         current_user = get_object_or_404(UserAccount, pk=request.user.pk)
@@ -425,6 +427,18 @@ def getOrganizationProfile(request,id, *args, **kwargs):
         print(error)
         return Response({"error":"Invalid ID/Something wrong happend!"})
 
+class UserProfilePictureUpdateView(APIView):
+    parser_classes = (MultiPartParser, FormParser,)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user  # Assuming you are using token-based authentication
+        serializer = UserProfilePictureSerializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # class ConversationView(APIView):
 #     def get(self, request, *args, **kwargs):
 #         receiver_email = request.query_params['q']

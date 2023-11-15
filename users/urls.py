@@ -39,7 +39,9 @@ from .views import (
 
     getAgentProfile,
     getOrganizationProfile,
-    RemoveAgentFromOrganization
+    RemoveAgentFromOrganization,
+    
+    UserProfilePictureUpdateView
 )
 
 urlpatterns = [
@@ -75,5 +77,7 @@ urlpatterns = [
     # path('send-message/', SendMessageView.as_view(), name='send-message'),
     path('inbox/<str:id>/', InboxView.as_view(), name='inbox'),
     path('getAgentProfile/<int:id>',getAgentProfile,name="getAgentProfile"),
-    path('getOrganizationProfile/<int:id>',getOrganizationProfile,name="getOrganizationProfile")
+    path('getOrganizationProfile/<int:id>',getOrganizationProfile,name="getOrganizationProfile"),
+
+    path('update-profile-picture/', UserProfilePictureUpdateView.as_view(), name='update_profile_picture'),
 ]
