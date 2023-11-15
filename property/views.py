@@ -79,9 +79,9 @@ def homeProp(request, *args, **kwargs):
 @permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
 def property(request, sku):
 
-    property = Property.objects.get(sku=sku)
+    properties = Property.objects.get(sku=sku)
 
-    property_serializer = PropertySerializerAll(property, many=True)
+    property_serializer = PropertySerializerAll(properties, many=True)
     return JsonResponse(property_serializer.data, safe=False)
 
     
