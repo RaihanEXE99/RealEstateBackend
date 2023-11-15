@@ -1,7 +1,7 @@
 from requests import Response
 from rest_framework import serializers
 
-from .models import Agent, UserProfile
+from .models import Agent, UserAccount, UserProfile
 
 class UserPhoneUpdateSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True, max_length=15)
@@ -35,6 +35,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['id', 'name', 'number', 'skype_link', 'facebook_link', 'linkedin_link', 'title', 'email', 'website', 'twitter', 'pinterest', 'description']
+
+class UserProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ['profile_picture']
 # class ConversationSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Conversation
