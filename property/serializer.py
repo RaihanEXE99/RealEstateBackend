@@ -142,6 +142,7 @@ class PropertySerializer(serializers.ModelSerializer):
 class PropertySerializerAll(serializers.ModelSerializer):
     address = AddressSerializer()
     details = PropertyDetailsSerializer()
+    images = ImageSerializer(many=True)
 
     class Meta:
         model = Property
