@@ -20,7 +20,7 @@ import math
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def ploygon_s(request, *args, **kwargs):
+def polygon_s(request, *args, **kwargs):
     if request.method == "GET":
         minlat = request.GET.get('minlat')
         maxlat = request.GET.get('maxlat')

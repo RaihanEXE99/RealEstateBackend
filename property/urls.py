@@ -24,5 +24,6 @@ urlpatterns = [
     path('all_properties/', all_properties, name='all_properties'),
     path('add-property/', PropertyCreateView.as_view(), name='all_properties'),
     path('hprop/', homeProp, name='homeProp'),
-    path('myProperty/', MyProperty.as_view(), name='myProperty')
+    path('myProperty/', MyProperty.as_view(), name='myProperty'),
+    path('polygon/', polygon_s, name="polygon")
 ]
