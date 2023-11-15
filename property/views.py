@@ -97,7 +97,7 @@ class PropertyCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyProperty(APIView):
-    def get(self, request, id, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         properties = Property.objects.filter(user=request.user)
         property_serializer = PropertySerializerAll(properties, many=True)
         return JsonResponse(property_serializer.data, safe=False)
