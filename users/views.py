@@ -430,7 +430,7 @@ def getOrganizationProfile(request,id, *args, **kwargs):
 class UserProfilePictureUpdateView(APIView):
     parser_classes = (MultiPartParser, FormParser,)
 
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = self.request.user  # Assuming you are using token-based authentication
         serializer = UserProfilePictureSerializer(user, data=request.data)
 
