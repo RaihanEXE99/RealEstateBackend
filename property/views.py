@@ -81,7 +81,7 @@ def property(request, sku):
 
     properties = Property.objects.get(sku=sku)
 
-    property_serializer = PropertySerializerAll(properties, many=False)
+    property_serializer = PropertySerializerAll(properties)
     return JsonResponse(property_serializer.data, safe=False)
 
     
