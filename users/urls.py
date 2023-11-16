@@ -41,7 +41,8 @@ from .views import (
     getOrganizationProfile,
     RemoveAgentFromOrganization,
     
-    UserProfilePictureUpdateView
+    UserProfilePictureUpdateView,
+    agentDetails
 )
 
 urlpatterns = [
@@ -80,4 +81,5 @@ urlpatterns = [
     path('getOrganizationProfile/<int:id>',getOrganizationProfile,name="getOrganizationProfile"),
 
     path('update-profile-picture/', UserProfilePictureUpdateView.as_view(), name='update_profile_picture'),
+    path('agentDetails/<str:id>/', agentDetails, name='agentDetails'),
 ]

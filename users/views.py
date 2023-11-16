@@ -439,6 +439,16 @@ class UserProfilePictureUpdateView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # Any user can view (FOR PUBLIC URLS)
+def agentDetails(request, id):
+
+    userAc = UserAccount.objects.get(id=id)
+    profile = UserProfile.object.get(user=userAc)
+
+    serializer  = UserProfileSerializer(profile)
+    return Response(serialize.data)
 # class ConversationView(APIView):
 #     def get(self, request, *args, **kwargs):
 #         receiver_email = request.query_params['q']
