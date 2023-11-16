@@ -31,7 +31,7 @@ SECRET_KEY = getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,realestate.nbytetech.com").split(",")
+ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,realestate.nbytetech.com,kaeskanest.com").split(",")
 
 
 INSTALLED_APPS = [
@@ -71,12 +71,13 @@ AUTH_COOKIE_SAMESITE = getenv('AUTH_COOKIE_SAMESITE')
 
 CORS_ALLOWED_ORIGINS = getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000'
+    'http://localhost:3000,http://127.0.0.1:3000,http://kaeskanest.com/'
 ).split(',')
 
 CORS_ORIGIN_WHITELIST = [
     # Add your React frontend URL here
     'http://localhost:3000',  # Example
+    'http://kaeskanest.com/'
 ]
 
 CORS_ALLOW_CREDENTIALS=True
