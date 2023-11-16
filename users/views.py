@@ -445,7 +445,7 @@ class UserProfilePictureUpdateView(APIView):
 def agentDetails(request, id):
 
     userAc = UserAccount.objects.get(id=id)
-    profile = UserProfile.object.get(user=userAc)
+    profile = UserProfile.objects.get(user=userAc)
 
     serializer  = UserProfileSerializer(profile)
     return Response(serialize.data)
