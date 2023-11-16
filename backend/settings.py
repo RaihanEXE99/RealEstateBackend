@@ -71,7 +71,7 @@ AUTH_COOKIE_SAMESITE = getenv('AUTH_COOKIE_SAMESITE')
 
 CORS_ALLOWED_ORIGINS = getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000,http://kaeskanest.com/'
+    'http://localhost:3000,http://127.0.0.1:3000,http://kaeskanest.com'
 ).split(',')
 
 CORS_ORIGIN_WHITELIST = [
