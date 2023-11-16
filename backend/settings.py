@@ -71,13 +71,13 @@ AUTH_COOKIE_SAMESITE = getenv('AUTH_COOKIE_SAMESITE')
 
 CORS_ALLOWED_ORIGINS = getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000,http://kaeskanest.com'
+    'http://localhost:3000,http://127.0.0.1:3000,https://kaeskanest.com'
 ).split(',')
 
 CORS_ORIGIN_WHITELIST = [
     # Add your React frontend URL here
     'http://localhost:3000',  # Example
-    'http://kaeskanest.com'
+    'https://kaeskanest.com'
 ]
 
 CORS_ALLOW_CREDENTIALS=True
