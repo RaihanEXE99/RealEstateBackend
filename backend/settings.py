@@ -77,7 +77,7 @@ CORS_ALLOWED_ORIGINS = getenv(
 CORS_ORIGIN_WHITELIST = [
     # Add your React frontend URL here
     'http://localhost:3000',  # Example
-    'http://kaeskanest.com/'
+    'http://kaeskanest.com'
 ]
 
 CORS_ALLOW_CREDENTIALS=True
