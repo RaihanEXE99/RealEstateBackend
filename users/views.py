@@ -448,7 +448,7 @@ def agentDetails(request, id):
     profile = UserProfile.objects.get(user=userAc)
 
     serializer  = UserProfileSerializer(profile)
-    return Response(serialize.data)
+    return Response(serializer.data)
 # class ConversationView(APIView):
 #     def get(self, request, *args, **kwargs):
 #         receiver_email = request.query_params['q']
