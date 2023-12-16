@@ -321,21 +321,41 @@ class MessagesListView(APIView):
         print(context)
         return Response(context)
 
+# class UserListsView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         user = get_object_or_404(UserAccount, pk=request.user.pk)
+#         users = UserAccount.objects.exclude(pk=user.pk)
+
+#         user_data = []  # List to store user data
+#         for u in users:
+#             user_data.append({
+#                 'id': u.id,
+#                 'email': u.email,
+#                 'full_name':u.full_name
+#                 # Add other fields as needed
+#             })
+
+#         return Response({'users': user_data}, status=status.HTTP_200_OK)
+    
 class UserListsView(APIView):
     def get(self, request, *args, **kwargs):
-        user = get_object_or_404(UserAccount, pk=request.user.pk)
-        users = UserAccount.objects.exclude(pk=user.pk)
+        # Get the currently logged-in user
+        current_user = get_object_or_404(UserAccount, pk=request.user.pk)
 
-        user_data = []  # List to store user data
-        for u in users:
+        # Get a list of users who have exchanged messages with the current user
+        users_with_messages = Message.get_users_with_messages(current_user)
+
+        # Prepare the response data
+        user_data = []
+        for u in users_with_messages:
             user_data.append({
                 'id': u.id,
                 'email': u.email,
-                'full_name':u.full_name
+                'full_name': u.full_name,
                 # Add other fields as needed
             })
 
-        return Response({'users': user_data}, status=status.HTTP_200_OK)
+        return Response({'users': user_data}, status=status.HTTP_200_OK)    
     
 class InboxView(APIView):
     def get(self, request, id, *args, **kwargs):

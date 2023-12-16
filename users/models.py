@@ -176,6 +176,22 @@ class Message(models.Model):
                 k.append(i)
 
         return k
+    
+    @staticmethod
+    def get_users_with_messages(current_user):
+        users_with_messages = set()
+
+        # Get all messages involving the current user
+        for message in Message.objects.filter(sender=current_user) | Message.objects.filter(recipient=current_user):
+            if message.sender != current_user:
+                users_with_messages.add(message.sender)
+            if message.recipient != current_user:
+                users_with_messages.add(message.recipient)
+
+        # Convert the set of users to a list
+        users_list = list(users_with_messages)
+
+        return users_list
 # class Conversation(models.Model):
 #     participants = models.ManyToManyField(get_user_model(), related_name='conversations')
 #     created_at = models.DateTimeField(auto_now_add=True)
